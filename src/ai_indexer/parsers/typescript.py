@@ -40,13 +40,38 @@ try:
     _TSX_PARSER = _make_parser(_TSX_LANG)
     _JS_PARSER  = _make_parser(_JS_LANG)
 
+    # ── Query runner: handles tree-sitter < 0.25 and >= 0.25 ────────────────
+    # < 0.25 : Query.captures(node)  → list[tuple[Node, str]]
+    # >= 0.25: QueryCursor(Query).captures(node) → dict[str, list[Node]]
+    try:
+        from tree_sitter import QueryCursor as _QueryCursor  # >= 0.25
+
+        def _make_query(lang: Any, src: str) -> Any:
+            return Query(lang, src)
+
+        def _run_captures(query: Any, node: Any) -> list[tuple[Any, str]]:
+            pairs: list[tuple[Any, str]] = []
+            for cap_name, nodes in _QueryCursor(query).captures(node).items():
+                for n in nodes:
+                    pairs.append((n, cap_name))
+            return pairs
+
+    except ImportError:
+        # tree-sitter < 0.25
+
+        def _make_query(lang: Any, src: str) -> Any:  # type: ignore[misc]
+            return lang.query(src)
+
+        def _run_captures(query: Any, node: Any) -> list[tuple[Any, str]]:  # type: ignore[misc]
+            return list(query.captures(node))
+
     _IMPORT_QUERY_SRC = """
     (import_statement source: (string (string_fragment) @module))
     (export_statement source: (string (string_fragment) @module))
     """
     try:
-        _TS_IMPORT_QUERY = _TS_LANG.query(_IMPORT_QUERY_SRC)
-        _JS_IMPORT_QUERY = _JS_LANG.query(_IMPORT_QUERY_SRC)
+        _TS_IMPORT_QUERY = _make_query(_TS_LANG, _IMPORT_QUERY_SRC)
+        _JS_IMPORT_QUERY = _make_query(_JS_LANG, _IMPORT_QUERY_SRC)
     except Exception:
         pass
 
@@ -124,9 +149,7 @@ class TypeScriptParser(BaseParser):
         tree = parser.parse(bytes(src, "utf-8"))
 
         if query is not None:
-            captures = query.captures(tree.root_node)
-            for cap in captures:
-                node, cap_name = cap[0], cap[1]
+            for node, cap_name in _run_captures(query, tree.root_node):
                 if cap_name == "module":
                     mod = node.text.decode("utf-8").strip("'\"")
                     resolved = resolver.resolve_import(mod, path)

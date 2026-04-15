@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-indexer"
-version = "8.0.0"
+version = "0.0.5"
 description = "AI Context Indexer – Production-Ready for 2026 LLM Ecosystems"
 readme = "README.md"
 requires-python = ">=3.11"

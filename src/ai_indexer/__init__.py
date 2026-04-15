@@ -1,4 +1,4 @@
-"""AI Context Indexer v8.0.0 – Production-Ready for 2026 LLM Ecosystems."""
+"""AI Context Indexer v0.0.5 – Production-Ready for 2026 LLM Ecosystems."""
 
-__version__ = "8.0.0"
+__version__ = "0.0.5"
 __all__ = ["__version__"]

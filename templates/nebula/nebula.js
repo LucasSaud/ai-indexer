@@ -10,9 +10,10 @@
  */
 
 // ── Scene setup ───────────────────────────────────────────────────────────────
-const canvas   = document.getElementById("nebula-canvas");
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const canvas    = document.getElementById("nebula-canvas");
+const isMobile  = window.innerWidth < 640 || ('ontouchstart' in window);
+const renderer  = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.5 : 2));
 renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.1;
@@ -335,19 +336,43 @@ function showInfo(idx) {
   infoPan.style.display="block";
 }
 
-// ── Raycaster + click ─────────────────────────────────────────────────────────
-const ray=new THREE.Raycaster(); ray.params.Points.threshold=4;
+// ── Raycaster + click / tap ───────────────────────────────────────────────────
+const ray=new THREE.Raycaster();
+ray.params.Points.threshold = isMobile ? 8 : 4;
 const mouse=new THREE.Vector2();
-canvas.addEventListener("click", evt => {
-  evt.preventDefault();
+
+function handlePick(clientX, clientY) {
   const rect=canvas.getBoundingClientRect();
-  mouse.x=((evt.clientX-rect.left)/rect.width)*2-1;
-  mouse.y=-((evt.clientY-rect.top)/rect.height)*2+1;
+  mouse.x=((clientX-rect.left)/rect.width)*2-1;
+  mouse.y=-((clientY-rect.top)/rect.height)*2+1;
   ray.setFromCamera(mouse,camera);
   const hits=ray.intersectObject(stars);
   if(hits.length){ showInfo(hits[0].index); flyToNode(hits[0].index); }
   else { infoPan.style.display="none"; }
+}
+
+// Mouse click (desktop)
+canvas.addEventListener("click", evt => {
+  evt.preventDefault();
+  handlePick(evt.clientX, evt.clientY);
 });
+
+// Touch tap (mobile) — distinguish tap from orbit swipe
+let _touchStart = null;
+canvas.addEventListener("touchstart", evt => {
+  if(evt.touches.length === 1)
+    _touchStart = { x: evt.touches[0].clientX, y: evt.touches[0].clientY };
+  else
+    _touchStart = null;
+}, { passive: true });
+canvas.addEventListener("touchend", evt => {
+  if(!_touchStart || evt.changedTouches.length !== 1) return;
+  const t = evt.changedTouches[0];
+  const dx = t.clientX - _touchStart.x, dy = t.clientY - _touchStart.y;
+  if(Math.sqrt(dx*dx + dy*dy) > 12) return; // swipe — let OrbitControls handle it
+  evt.preventDefault();
+  handlePick(t.clientX, t.clientY);
+}, { passive: false });
 
 // ── TWEEN fly-to-node ─────────────────────────────────────────────────────────
 function flyToNode(idx) {
@@ -381,6 +406,40 @@ function advanceTour(){
 document.getElementById("btn-legend").addEventListener("click", ()=>{
   const el=document.getElementById("nebula-legend");
   el.style.display=el.style.display==="none"?"flex":"none";
+});
+
+// ── Zoom controls ─────────────────────────────────────────────────────────────
+function smoothZoom(factor) {
+  const dir  = camera.position.clone().sub(controls.target);
+  const dist = dir.length();
+  const next = Math.max(controls.minDistance, Math.min(controls.maxDistance, dist * factor));
+  const dest = controls.target.clone().add(dir.normalize().multiplyScalar(next));
+  controls.autoRotate = false;
+  new TWEEN.Tween(camera.position)
+    .to({ x: dest.x, y: dest.y, z: dest.z }, 320)
+    .easing(TWEEN.Easing.Quadratic.Out)
+    .start();
+}
+document.getElementById("btn-zoom-in") .addEventListener("click", () => smoothZoom(0.65));
+document.getElementById("btn-zoom-out").addEventListener("click", () => smoothZoom(1.55));
+
+// Long-press continuous zoom
+let _zoomInterval = null;
+function startContinuousZoom(factor) {
+  smoothZoom(factor);
+  _zoomInterval = setInterval(() => smoothZoom(factor), 350);
+}
+function stopContinuousZoom() {
+  clearInterval(_zoomInterval); _zoomInterval = null;
+}
+["btn-zoom-in","btn-zoom-out"].forEach(id => {
+  const btn = document.getElementById(id);
+  const factor = id === "btn-zoom-in" ? 0.65 : 1.55;
+  btn.addEventListener("mousedown",  () => startContinuousZoom(factor));
+  btn.addEventListener("touchstart", () => startContinuousZoom(factor), { passive: true });
+  ["mouseup","mouseleave","touchend","touchcancel"].forEach(ev =>
+    btn.addEventListener(ev, stopContinuousZoom)
+  );
 });
 
 // ── Resize ────────────────────────────────────────────────────────────────────

@@ -70,6 +70,63 @@ class IndexerConfig:
     def chunk_max_tokens(self) -> int:
         return int(self._d.get("chunk_max_tokens", 800))
 
+    @property
+    def type_segment_rules(self) -> list[tuple[str, str] | tuple[str, str, float]]:
+        """User-defined segment → file-type rules prepended before built-in rules."""
+        return list(self._d.get("type_segment_rules", []))
+
+    @property
+    def type_name_rules(self) -> list[tuple[str, str] | tuple[str, str, float]]:
+        """User-defined stem-keyword → file-type rules prepended before built-in rules."""
+        return list(self._d.get("type_name_rules", []))
+
+    @property
+    def type_suffix_rules(self) -> dict[str, tuple[str, float]]:
+        """User-defined suffix → (file-type, confidence) overrides."""
+        return dict(self._d.get("type_suffix_rules", {}))
+
+    @property
+    def type_exact_name_rules(self) -> dict[str, tuple[str, float]]:
+        """User-defined exact filename → (file-type, confidence) overrides."""
+        return dict(self._d.get("type_exact_name_rules", {}))
+
+    @property
+    def include_patterns(self) -> list[str]:
+        """Glob patterns that files must match to be included (empty = include all)."""
+        return list(self._d.get("include_patterns", []))
+
+    @property
+    def security_enabled(self) -> bool:
+        """Whether to scan files for hardcoded secrets/credentials."""
+        return bool(self._d.get("security", {}).get("enabled", True))
+
+    @property
+    def instruction_file(self) -> str:
+        """Path to a plain-text instruction file to inject into all outputs."""
+        return str(self._d.get("instruction_file", ""))
+
+    # ── Git context ──────────────────────────────────────────────────────────
+
+    @property
+    def git_include_logs(self) -> bool:
+        return bool(self._d.get("git", {}).get("include_logs", False))
+
+    @property
+    def git_logs_count(self) -> int:
+        return int(self._d.get("git", {}).get("logs_count", 10))
+
+    @property
+    def git_include_diffs(self) -> bool:
+        return bool(self._d.get("git", {}).get("include_diffs", False))
+
+    @property
+    def git_sort_by_changes(self) -> bool:
+        return bool(self._d.get("git", {}).get("sort_by_changes", False))
+
+    @property
+    def git_sort_max_commits(self) -> int:
+        return int(self._d.get("git", {}).get("sort_max_commits", 100))
+
 
 def load_config(root: Path) -> IndexerConfig:
     """Load .indexer.yaml from *root*; return defaults if not found or YAML unavailable."""

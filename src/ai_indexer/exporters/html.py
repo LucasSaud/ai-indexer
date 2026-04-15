@@ -20,6 +20,7 @@ log = logging.getLogger("ai-indexer.html")
 
 try:
     from jinja2 import Environment, FileSystemLoader
+    from markupsafe import Markup as _Markup
     _JINJA2 = True
 except ImportError:
     _JINJA2 = False
@@ -46,7 +47,7 @@ class HtmlExporter(BaseExporter):
         rev      = data.get("reverse_graph") or {}
         modules  = data.get("modules") or {}
         hotspots = data.get("hotspots") or []
-        version  = data.get("version", "8.0.0")
+        version  = data.get("version", "0.0.5")
         project  = data.get("project", "")
         ts       = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -140,10 +141,12 @@ class HtmlExporter(BaseExporter):
                 autoescape=True,
             )
             tmpl = env.get_template("index.html")
+            # data_block, styles_css, and nebula_js are trusted internal content
+            # injected verbatim into <script>/<style> tags — must not be HTML-escaped.
             return tmpl.render(
-                data_block=data_block,
-                styles_css=styles_css,
-                nebula_js=nebula_js,
+                data_block=_Markup(data_block),
+                styles_css=_Markup(styles_css),
+                nebula_js=_Markup(nebula_js),
                 **ctx,
             )
 
@@ -254,15 +257,15 @@ class HtmlExporter(BaseExporter):
 
         # CDN scripts for Three.js + extras + TWEEN
         cdn = (
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.min.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/controls/OrbitControls.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/postprocessing/EffectComposer.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/postprocessing/RenderPass.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/postprocessing/UnrealBloomPass.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/postprocessing/ShaderPass.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/shaders/LuminosityHighPassShader.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/shaders/CopyShader.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/renderers/CSS2DRenderer.js"></script>'
+            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>'
+            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>'
+            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/EffectComposer.js"></script>'
+            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/RenderPass.js"></script>'
+            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/UnrealBloomPass.js"></script>'
+            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/ShaderPass.js"></script>'
+            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/shaders/LuminosityHighPassShader.js"></script>'
+            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/shaders/CopyShader.js"></script>'
+            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/renderers/CSS2DRenderer.js"></script>'
             '<script src="https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@18.6.4/dist/tween.umd.js"></script>'
             '<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>'
         )
@@ -272,17 +275,18 @@ function switchView(v){
   var nv=document.getElementById('nebula-view');
   var dv=document.getElementById('dash-view');
   var nc=document.getElementById('nebula-controls');
+  var zc=document.getElementById('zoom-controls');
   var lg=document.getElementById('nebula-legend');
   var ip=document.getElementById('info-panel');
   var pt=document.getElementById('project-title');
   if(v==='nebula'){
     nv.style.display='block';dv.style.display='none';
-    nc.style.display='flex';pt.style.display='block';
+    nc.style.display='flex';zc.style.display='flex';pt.style.display='block';
     document.body.style.overflow='hidden';
   } else {
     nv.style.display='none';dv.style.display='block';
-    nc.style.display='none';lg.style.display='none';
-    ip.style.display='none';pt.style.display='none';
+    nc.style.display='none';zc.style.display='none';
+    lg.style.display='none';ip.style.display='none';pt.style.display='none';
     document.body.style.overflow='auto';document.body.style.background='#f0f4f8';
   }
 }
@@ -295,7 +299,8 @@ if(nb) nb.addEventListener('click',function(){switchView('nebula');});
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
 <title>Code Nebula v8 &middot; {safe(proj)}</title>
 {cdn}
 </head>
@@ -303,11 +308,11 @@ if(nb) nb.addEventListener('click',function(){switchView('nebula');});
 <script>{data_block}</script>
 <style>{styles_css}</style>
 <style>
-.modules-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:12px;}}
-.module-card{{background:#f8fafc;border-radius:9px;padding:13px;border:1px solid #e2e8f0;}}
-.module-name{{font-weight:600;font-size:.83rem;color:#0f172a;margin-bottom:4px;}}
-.module-count{{font-size:.72rem;color:#64748b;}}
-.module-sample{{font-size:.68rem;color:#94a3b8;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}}
+.modules-grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;}}
+.module-card{{background:#f8fafc;border-radius:9px;padding:11px 13px;border:1px solid #e2e8f0;}}
+.module-name{{font-weight:600;font-size:.82rem;color:#0f172a;margin-bottom:4px;}}
+.module-count{{font-size:.70rem;color:#64748b;}}
+.module-sample{{font-size:.67rem;color:#94a3b8;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}}
 </style>
 <div id="project-title">{safe(proj)}</div>
 <div id="nebula-view"><canvas id="nebula-canvas"></canvas></div>
@@ -315,6 +320,10 @@ if(nb) nb.addEventListener('click',function(){switchView('nebula');});
   <button class="nb-btn" id="btn-to-dash">Dashboard</button>
   <button class="nb-btn" id="btn-tour">Tour</button>
   <button class="nb-btn" id="btn-legend">Legend</button>
+</div>
+<div id="zoom-controls">
+  <button class="zoom-btn" id="btn-zoom-in"  aria-label="Zoom in">+</button>
+  <button class="zoom-btn" id="btn-zoom-out" aria-label="Zoom out">&#8722;</button>
 </div>
 <div id="info-panel">
   <button id="info-close">&times;</button>

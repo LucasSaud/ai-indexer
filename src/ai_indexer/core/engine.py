@@ -546,6 +546,44 @@ class AnalysisEngine:
 
     # ── File collection ───────────────────────────────────────────────────────
 
+    def _resolve_scan_roots(self, ignore_dirs: frozenset[str]) -> list[Path]:
+        """Return the directories that should actually be walked.
+
+        Priority
+        --------
+        1. ``<root>/src`` exists  →  scan **only** that directory; all other
+           top-level siblings are ignored.
+        2. No ``<root>/src``  →  look one level deeper: any immediate
+           sub-directory of *root* that contains a ``src/`` child is a
+           candidate; collect all their ``src/`` paths and scan those.
+        3. Neither found  →  fall back to scanning *root* as-is.
+        """
+        src_at_root = self.root / "src"
+        if src_at_root.is_dir():
+            log.info("src/ found at root — restricting analysis to %s", src_at_root)
+            return [src_at_root]
+
+        nested: list[Path] = []
+        try:
+            for child in sorted(self.root.iterdir()):
+                if not child.is_dir() or child.name in ignore_dirs:
+                    continue
+                candidate = child / "src"
+                if candidate.is_dir():
+                    nested.append(candidate)
+        except PermissionError:
+            pass
+
+        if nested:
+            log.info(
+                "No root src/ — scanning %d nested src/ dir(s): %s",
+                len(nested),
+                [str(s.relative_to(self.root)) for s in nested],
+            )
+            return nested
+
+        return [self.root]
+
     def _collect_files(self) -> list[Path]:
         ignore_dirs = _IGNORE_DIRS | self.config.exclude_dirs
         ignore_patterns = _IGNORE_PATTERNS + self.config.exclude_patterns
@@ -553,23 +591,38 @@ class AnalysisEngine:
         special_names = _SPECIAL_TEXT_FILENAMES | self.config.extra_text_filenames
         result: list[Path] = []
 
-        for p in self.root.rglob("*"):
-            if not p.is_file():
-                continue
-            if p.name in _GENERATED_FILES:
-                continue
-            rel = p.relative_to(self.root)
-            parts = rel.parts
-            if any(part in ignore_dirs for part in parts[:-1]):
-                continue
-            if any(fnmatch.fnmatch(p.name, pat) for pat in ignore_patterns):
-                continue
-            if gi.should_ignore(rel):
-                continue
-            suffix = p.suffix.lower()
-            if suffix not in _TEXT_SUFFIXES and p.name not in special_names:
-                continue
-            result.append(p)
+        scan_roots = self._resolve_scan_roots(ignore_dirs)
+
+        for scan_root in scan_roots:
+            for p in scan_root.rglob("*"):
+                if not p.is_file():
+                    continue
+                if p.name in _GENERATED_FILES:
+                    continue
+                rel = p.relative_to(self.root)
+                parts = rel.parts
+                if any(part in ignore_dirs for part in parts[:-1]):
+                    continue
+                if any(fnmatch.fnmatch(p.name, pat) for pat in ignore_patterns):
+                    continue
+                if gi.should_ignore(rel):
+                    continue
+                suffix = p.suffix.lower()
+                if suffix not in _TEXT_SUFFIXES and p.name not in special_names:
+                    continue
+                result.append(p)
+
+        # Include-patterns whitelist: if configured, keep only matching files
+        include_pats = self.config.include_patterns
+        if include_pats:
+            result = [
+                p for p in result
+                if any(
+                    fnmatch.fnmatch(p.relative_to(self.root).as_posix(), pat)
+                    for pat in include_pats
+                )
+            ]
+
         return result
 
     # ── File index ────────────────────────────────────────────────────────────
@@ -658,6 +711,14 @@ class AnalysisEngine:
             pr.functions, pr.classes, pr.external, pr.module_doc
         )
 
+        warnings: list[str] = []
+        if self.config.security_enabled:
+            try:
+                from ai_indexer.utils.security import scan_secrets
+                warnings.extend(scan_secrets(path, src))
+            except Exception as e:
+                log.debug("Secret scan failed for %s: %s", path, e)
+
         return {
             "file": rel.as_posix(),
             "file_type": ftype_cv.to_dict(),
@@ -671,7 +732,7 @@ class AnalysisEngine:
             "capabilities": {"functions": pr.functions, "classes": pr.classes, "exports": pr.exports},
             "dependencies": pr.external,
             "internal_dependencies": pr.internal,
-            "warnings": [],
+            "warnings": warnings,
             "is_in_cycle": False,
             "docstrings": pr.docstrings,
             "type_hints": pr.type_hints,

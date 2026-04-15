@@ -1,0 +1,52 @@
+# ── Ambiente virtual ──────────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Bytecode Python ───────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# ── Packaging / distribuição ──────────────────────────────────────────────────
+*.egg-info/
+dist/
+build/
+*.egg
+MANIFEST
+
+# ── Outputs gerados pelo ai-indexer ──────────────────────────────────────────
+estrutura_projeto.json
+estrutura_projeto.toon
+estrutura_projeto.html
+estrutura_projeto.md
+estrutura_projeto.xml
+.aicontext_cache_v*.json
+tour_*.mp3
+tour_*.wav
+
+# ── Sistema operacional ───────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDEs e editores ───────────────────────────────────────────────────────────
+.idea/
+.vscode/
+.cursor/
+*.swp
+*.swo
+
+# ── Variáveis de ambiente ─────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Mypy / Ruff / Pytest ──────────────────────────────────────────────────────
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
