@@ -250,7 +250,8 @@ class HtmlExporter(BaseExporter):
             ("config","#e6990a"),("cache","#66b3ff"),("security","#ff5050"),("shared","#e0e0e0"),
         ]
         leg_html = "\n".join(
-            f'<div class="leg-item"><div class="leg-dot" style="background:{c}"></div>'
+            f'<div class="leg-item legend-item" data-domain="{d}">'
+            f'<div class="leg-dot" style="background:{c}"></div>'
             f'<span>{d}</span></div>'
             for d, c in _leg
         )
@@ -320,12 +321,16 @@ if(nb) nb.addEventListener('click',function(){switchView('nebula');});
   <button class="nb-btn" id="btn-to-dash">Dashboard</button>
   <button class="nb-btn" id="btn-tour">Tour</button>
   <button class="nb-btn" id="btn-legend">Legend</button>
+  <input id="nebula-search" type="text" placeholder="search file…" autocomplete="off"
+    style="background:rgba(10,20,50,.75);border:1px solid #2d4a8a;border-radius:6px;
+    color:#adc8ff;font:13px monospace;padding:4px 10px;outline:none;width:160px;">
+  <span id="nb-count" style="color:#4a6a9a;font:11px monospace;padding:0 6px;white-space:nowrap;"></span>
 </div>
 <div id="zoom-controls">
   <button class="zoom-btn" id="btn-zoom-in"  aria-label="Zoom in">+</button>
   <button class="zoom-btn" id="btn-zoom-out" aria-label="Zoom out">&#8722;</button>
 </div>
-<div id="info-panel">
+<div id="info-panel" aria-hidden="true">
   <button id="info-close">&times;</button>
   <div id="info-content"></div>
 </div>

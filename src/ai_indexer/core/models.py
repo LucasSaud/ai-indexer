@@ -66,6 +66,10 @@ class FileMetadata:
     chunks: list[str] = field(default_factory=list)
     module_doc: str | None = None
 
+    # ── Call graph (intra-file, Python only) ─────────────────────────────────
+    func_calls: dict[str, list[str]] = field(default_factory=dict)
+    """function_name → list of called names; populated by the Python parser."""
+
     # ── Semantic hints (AI consumer-facing) ─────────────────────────────────
     hints: dict[str, Any] = field(default_factory=dict)
 
@@ -96,6 +100,7 @@ class FileMetadata:
                 "cx":  self.context,
                 "rh":  self.role_hint,
                 "caps": {k: v[:5] for k, v in self.capabilities.items() if v},
+                "fc":  {k: v for k, v in self.func_calls.items() if v},
                 "deps":  self.dependencies[:10],
                 "ideps": self.internal_dependencies[:10],
                 "fi":  self.fan_in,
@@ -141,6 +146,7 @@ class FileMetadata:
             "module_doc": self.module_doc,
             "hints": self.hints,
             "chunks": self.chunks,
+            "func_calls": self.func_calls,
         }
         return d
 

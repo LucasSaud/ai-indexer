@@ -2,53 +2,742 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Code Nebula v8 &middot; ai_indexer</title>
-<script src="https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.min.js"></script><script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/controls/OrbitControls.js"></script><script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/postprocessing/EffectComposer.js"></script><script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/postprocessing/RenderPass.js"></script><script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/postprocessing/UnrealBloomPass.js"></script><script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/postprocessing/ShaderPass.js"></script><script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/shaders/LuminosityHighPassShader.js"></script><script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/shaders/CopyShader.js"></script><script src="https://cdn.jsdelivr.net/npm/three@0.163.0/examples/js/renderers/CSS2DRenderer.js"></script><script src="https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@18.6.4/dist/tween.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Code Nebula v8 &middot; ai-indexer</title>
+<!-- Three.js core + addons -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/renderers/CSS2DRenderer.js"></script>
+<!-- TWEEN + Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@18.6.4/dist/tween.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
-<script>const ALL_FILES={};const FULL_EDGES=[];const MODULES_DATA={};const CYCLIC_SET=new Set([]);const HEALTH_SCORE=1.0000;const PROJECT_NAME="ai_indexer";</script>
-<style></style>
-<style>
-.modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:12px;}
-.module-card{background:#f8fafc;border-radius:9px;padding:13px;border:1px solid #e2e8f0;}
-.module-name{font-weight:600;font-size:.83rem;color:#0f172a;margin-bottom:4px;}
-.module-count{font-size:.72rem;color:#64748b;}
-.module-sample{font-size:.68rem;color:#94a3b8;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}
+
+
+<script>const ALL_FILES={"src/ai_indexer/audio_tours/mixer.py":{"file":"src/ai_indexer/audio_tours/mixer.py","domain":"ai","priority":28,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"module for ai","warnings":[],"refactor_effort":116.2798,"blast_radius":2},"src/ai_indexer/audio_tours/narrator.py":{"file":"src/ai_indexer/audio_tours/narrator.py","domain":"ai","priority":28,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"module for ai","warnings":[],"refactor_effort":200.1538,"blast_radius":2},"src/ai_indexer/audio_tours/script_builder.py":{"file":"src/ai_indexer/audio_tours/script_builder.py","domain":"ai","priority":28,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"builder for ai","warnings":[],"refactor_effort":207.7787,"blast_radius":2},"src/ai_indexer/core/cache.py":{"file":"src/ai_indexer/core/cache.py","domain":"ai","priority":60,"fan_in":1,"criticality":"c","entrypoint":false,"role_hint":"core – Incremental analysis cache.\n\nPersists per-file metadata keyed by (path + mtime +","warnings":[],"refactor_effort":379.6706,"blast_radius":4},"src/ai_indexer/core/engine.py":{"file":"src/ai_indexer/core/engine.py","domain":"auth","priority":72,"fan_in":3,"criticality":"c","entrypoint":false,"role_hint":"core – Analysis engine — orchestrates parsing, graph building, metric enrichment,\nand o","warnings":[],"refactor_effort":1214.1925,"blast_radius":4},"src/ai_indexer/core/models.py":{"file":"src/ai_indexer/core/models.py","domain":"ai","priority":60,"fan_in":3,"criticality":"c","entrypoint":false,"role_hint":"core – Core data models for the AI Context Indexer.\n\nUses dataclasses with __slots__ (P","warnings":[],"refactor_effort":210.6219,"blast_radius":6},"src/ai_indexer/exporters/base.py":{"file":"src/ai_indexer/exporters/base.py","domain":"ai","priority":32,"fan_in":7,"criticality":"s","entrypoint":false,"role_hint":"module – Abstract base exporter.","warnings":[],"refactor_effort":14.0849,"blast_radius":11},"src/ai_indexer/exporters/dsl.py":{"file":"src/ai_indexer/exporters/dsl.py","domain":"ai","priority":34,"fan_in":2,"criticality":"s","entrypoint":false,"role_hint":"module – DSL (Domain-Specific Language) exporter.\n\nProduces a compact, function-aware tex","warnings":[],"refactor_effort":296.0527,"blast_radius":4},"src/ai_indexer/exporters/html.py":{"file":"src/ai_indexer/exporters/html.py","domain":"ai","priority":34,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"module – HTML dashboard exporter.\n\nRenders the Code Nebula v8 dashboard by injecting proj","warnings":[],"refactor_effort":920.7074,"blast_radius":2},"src/ai_indexer/exporters/toon.py":{"file":"src/ai_indexer/exporters/toon.py","domain":"ai","priority":34,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"module – TOON format exporter.\n\nTOON is a compact YAML-like text format that reduces repe","warnings":[],"refactor_effort":714.8349,"blast_radius":2},"src/ai_indexer/exporters/xml_exporter.py":{"file":"src/ai_indexer/exporters/xml_exporter.py","domain":"ai","priority":34,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"port – XML output exporter.\n\nProduces a structured XML document suitable for direct LLM","warnings":[],"refactor_effort":453.6819,"blast_radius":2},"src/ai_indexer/gui/app.py":{"file":"src/ai_indexer/gui/app.py","domain":"ai","priority":68,"fan_in":0,"criticality":"c","entrypoint":true,"role_hint":"entrypoint – QApplication entry point — palette, Fusion theme, and main() for the GUI.","warnings":[],"refactor_effort":463.0364,"blast_radius":0},"src/ai_indexer/gui/components/files_table.py":{"file":"src/ai_indexer/gui/components/files_table.py","domain":"ai","priority":36,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"component – Files table — sortable QTableWidget showing FileMetadata for every file.","warnings":[],"refactor_effort":538.5082,"blast_radius":2},"src/ai_indexer/gui/components/hotspots_panel.py":{"file":"src/ai_indexer/gui/components/hotspots_panel.py","domain":"ai","priority":32,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"component – Hotspots panel — top-N files by priority score.","warnings":[],"refactor_effort":274.7867,"blast_radius":2},"src/ai_indexer/gui/components/log_console.py":{"file":"src/ai_indexer/gui/components/log_console.py","domain":"ai","priority":32,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"component – Log console — streaming read-only QPlainTextEdit for engine output.","warnings":[],"refactor_effort":254.5005,"blast_radius":2},"src/ai_indexer/gui/components/output_panel.py":{"file":"src/ai_indexer/gui/components/output_panel.py","domain":"ai","priority":36,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"component – Output panel — lists written output files with open/reveal actions.","warnings":[],"refactor_effort":372.5297,"blast_radius":2},"src/ai_indexer/gui/components/project_panel.py":{"file":"src/ai_indexer/gui/components/project_panel.py","domain":"ai","priority":36,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"component – Project panel — path selector, format checkboxes, and Run button.","warnings":[],"refactor_effort":816.9834,"blast_radius":2},"src/ai_indexer/gui/components/warnings_panel.py":{"file":"src/ai_indexer/gui/components/warnings_panel.py","domain":"ai","priority":32,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"component – Warnings panel — architectural and security warnings tree.","warnings":[],"refactor_effort":339.334,"blast_radius":2},"src/ai_indexer/gui/engine_worker.py":{"file":"src/ai_indexer/gui/engine_worker.py","domain":"ai","priority":38,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"worker – Background worker that runs AnalysisEngine on a QThread.\n\nAll heavy work happens","warnings":[],"refactor_effort":601.2112,"blast_radius":2},"src/ai_indexer/gui/main_window.py":{"file":"src/ai_indexer/gui/main_window.py","domain":"ai","priority":66,"fan_in":1,"criticality":"c","entrypoint":false,"role_hint":"entrypoint – Main application window — layout, menu bar, and worker lifecycle.","warnings":[],"refactor_effort":1176.0395,"blast_radius":1},"src/ai_indexer/main.py":{"file":"src/ai_indexer/main.py","domain":"ai","priority":80,"fan_in":1,"criticality":"c","entrypoint":true,"role_hint":"entrypoint – CLI entrypoint for AI Context Indexer.","warnings":[],"refactor_effort":1561.2432,"blast_radius":2},"src/ai_indexer/mcp/http_server.py":{"file":"src/ai_indexer/mcp/http_server.py","domain":"ai","priority":58,"fan_in":1,"criticality":"c","entrypoint":false,"role_hint":"entrypoint – Minimal stdlib HTTP server that exposes MCP query methods as REST endpoints.\n\nSt","warnings":[],"refactor_effort":476.5566,"blast_radius":2},"src/ai_indexer/mcp/server.py":{"file":"src/ai_indexer/mcp/server.py","domain":"ai","priority":74,"fan_in":2,"criticality":"c","entrypoint":true,"role_hint":"entrypoint – MCP (Model Context Protocol) server — JSON-RPC 2.0 over stdio.\n\n100% backward-co","warnings":[],"refactor_effort":504.909,"blast_radius":3},"src/ai_indexer/parsers/base.py":{"file":"src/ai_indexer/parsers/base.py","domain":"ai","priority":33,"fan_in":0,"criticality":"s","entrypoint":false,"role_hint":"module – Abstract base class for language parsers.","warnings":["📭 Orphan file — no file imports it and it's not an entrypoint"],"refactor_effort":1035.0224,"blast_radius":0},"src/ai_indexer/parsers/python.py":{"file":"src/ai_indexer/parsers/python.py","domain":"ai","priority":34,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"module – Python language parser (AST-primary, regex fallback).","warnings":[],"refactor_effort":475.0468,"blast_radius":4},"src/ai_indexer/parsers/typescript.py":{"file":"src/ai_indexer/parsers/typescript.py","domain":"ai","priority":38,"fan_in":1,"criticality":"c","entrypoint":false,"role_hint":"types – TypeScript / JavaScript language parser.\n\nUses tree-sitter when available; falls","warnings":[],"refactor_effort":821.7025,"blast_radius":4},"src/ai_indexer/tours/generator.py":{"file":"src/ai_indexer/tours/generator.py","domain":"ai","priority":34,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"module – Tour generator – builds a structured narration tour from AnalysisEngine output.","warnings":[],"refactor_effort":413.6511,"blast_radius":2},"src/ai_indexer/utils/config.py":{"file":"src/ai_indexer/utils/config.py","domain":"ai","priority":34,"fan_in":3,"criticality":"s","entrypoint":false,"role_hint":"util – YAML configuration loader for .indexer.yaml project overrides.","warnings":[],"refactor_effort":357.5698,"blast_radius":5},"src/ai_indexer/utils/git_context.py":{"file":"src/ai_indexer/utils/git_context.py","domain":"ai","priority":28,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"util – Git context helpers: recent logs, diffs, and change-frequency data.","warnings":[],"refactor_effort":325.9647,"blast_radius":2},"src/ai_indexer/utils/io.py":{"file":"src/ai_indexer/utils/io.py","domain":"ai","priority":35,"fan_in":4,"criticality":"s","entrypoint":false,"role_hint":"util – I/O utilities: safe file reading (mmap for large files), token counting,\nimport ","warnings":[],"refactor_effort":261.9429,"blast_radius":7},"src/ai_indexer/utils/security.py":{"file":"src/ai_indexer/utils/security.py","domain":"database","priority":28,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"util – Secret / credential scanner.\n\nScans file source text for common secret patterns ","warnings":[],"refactor_effort":264.1187,"blast_radius":4},"src/ai_indexer/utils/ui.py":{"file":"src/ai_indexer/utils/ui.py","domain":"ai","priority":34,"fan_in":1,"criticality":"s","entrypoint":false,"role_hint":"util – Terminal UI for ai-indexer.\n\nUses `rich` for a live progress bar and structured ","warnings":[],"refactor_effort":678.6166,"blast_radius":2}};const FULL_EDGES=[["src/ai_indexer/main.py","src/ai_indexer/exporters/html.py"],["src/ai_indexer/main.py","src/ai_indexer/audio_tours/narrator.py"],["src/ai_indexer/main.py","src/ai_indexer/audio_tours/mixer.py"],["src/ai_indexer/main.py","src/ai_indexer/utils/ui.py"],["src/ai_indexer/main.py","src/ai_indexer/core/engine.py"],["src/ai_indexer/main.py","src/ai_indexer/audio_tours/script_builder.py"],["src/ai_indexer/main.py","src/ai_indexer/tours/generator.py"],["src/ai_indexer/main.py","src/ai_indexer/exporters/toon.py"],["src/ai_indexer/main.py","src/ai_indexer/mcp/http_server.py"],["src/ai_indexer/main.py","src/ai_indexer/utils/git_context.py"],["src/ai_indexer/main.py","src/ai_indexer/exporters/xml_exporter.py"],["src/ai_indexer/main.py","src/ai_indexer/utils/config.py"],["src/ai_indexer/main.py","src/ai_indexer/exporters/dsl.py"],["src/ai_indexer/main.py","src/ai_indexer/mcp/server.py"],["src/ai_indexer/tours/generator.py","src/ai_indexer/core/engine.py"],["src/ai_indexer/parsers/base.py","src/ai_indexer/utils/io.py"],["src/ai_indexer/parsers/python.py","src/ai_indexer/utils/io.py"],["src/ai_indexer/parsers/python.py","src/ai_indexer/exporters/base.py"],["src/ai_indexer/parsers/typescript.py","src/ai_indexer/utils/io.py"],["src/ai_indexer/parsers/typescript.py","src/ai_indexer/exporters/base.py"],["src/ai_indexer/core/engine.py","src/ai_indexer/exporters/base.py"],["src/ai_indexer/core/engine.py","src/ai_indexer/utils/security.py"],["src/ai_indexer/core/engine.py","src/ai_indexer/core/cache.py"],["src/ai_indexer/core/engine.py","src/ai_indexer/utils/io.py"],["src/ai_indexer/core/engine.py","src/ai_indexer/parsers/python.py"],["src/ai_indexer/core/engine.py","src/ai_indexer/core/models.py"],["src/ai_indexer/core/engine.py","src/ai_indexer/utils/config.py"],["src/ai_indexer/core/engine.py","src/ai_indexer/parsers/typescript.py"],["src/ai_indexer/exporters/dsl.py","src/ai_indexer/exporters/base.py"],["src/ai_indexer/exporters/toon.py","src/ai_indexer/exporters/base.py"],["src/ai_indexer/exporters/xml_exporter.py","src/ai_indexer/exporters/base.py"],["src/ai_indexer/exporters/html.py","src/ai_indexer/exporters/base.py"],["src/ai_indexer/gui/main_window.py","src/ai_indexer/gui/components/output_panel.py"],["src/ai_indexer/gui/main_window.py","src/ai_indexer/gui/components/log_console.py"],["src/ai_indexer/gui/main_window.py","src/ai_indexer/gui/engine_worker.py"],["src/ai_indexer/gui/main_window.py","src/ai_indexer/gui/components/hotspots_panel.py"],["src/ai_indexer/gui/main_window.py","src/ai_indexer/gui/components/project_panel.py"],["src/ai_indexer/gui/main_window.py","src/ai_indexer/gui/components/warnings_panel.py"],["src/ai_indexer/gui/main_window.py","src/ai_indexer/gui/components/files_table.py"],["src/ai_indexer/mcp/server.py","src/ai_indexer/core/models.py"],["src/ai_indexer/mcp/server.py","src/ai_indexer/exporters/dsl.py"],["src/ai_indexer/gui/app.py","src/ai_indexer/gui/main_window.py"],["src/ai_indexer/mcp/http_server.py","src/ai_indexer/core/models.py"],["src/ai_indexer/mcp/http_server.py","src/ai_indexer/mcp/server.py"],["src/ai_indexer/gui/engine_worker.py","src/ai_indexer/core/engine.py"],["src/ai_indexer/gui/engine_worker.py","src/ai_indexer/utils/config.py"],["src/ai_indexer/gui/engine_worker.py","src/ai_indexer/main.py"]];const MODULES_DATA={"src/ai":["src/ai_indexer/main.py","src/ai_indexer/tours/generator.py","src/ai_indexer/parsers/base.py","src/ai_indexer/parsers/python.py","src/ai_indexer/parsers/typescript.py","src/ai_indexer/exporters/dsl.py","src/ai_indexer/exporters/toon.py","src/ai_indexer/exporters/xml_exporter.py","src/ai_indexer/core/cache.py","src/ai_indexer/core/models.py","src/ai_indexer/exporters/html.py","src/ai_indexer/exporters/base.py","src/ai_indexer/utils/config.py","src/ai_indexer/utils/git_context.py","src/ai_indexer/utils/io.py","src/ai_indexer/gui/main_window.py","src/ai_indexer/utils/ui.py","src/ai_indexer/mcp/server.py","src/ai_indexer/gui/app.py","src/ai_indexer/mcp/http_server.py","src/ai_indexer/gui/engine_worker.py","src/ai_indexer/audio_tours/narrator.py","src/ai_indexer/gui/components/output_panel.py","src/ai_indexer/audio_tours/mixer.py","src/ai_indexer/audio_tours/script_builder.py","src/ai_indexer/gui/components/project_panel.py","src/ai_indexer/gui/components/warnings_panel.py","src/ai_indexer/gui/components/hotspots_panel.py","src/ai_indexer/gui/components/log_console.py","src/ai_indexer/gui/components/files_table.py"],"src/auth":["src/ai_indexer/core/engine.py"],"src/database":["src/ai_indexer/utils/security.py"]};const CYCLIC_SET=new Set(["src/ai_indexer/audio_tours/mixer.py","src/ai_indexer/audio_tours/narrator.py","src/ai_indexer/audio_tours/script_builder.py","src/ai_indexer/core/cache.py","src/ai_indexer/core/engine.py","src/ai_indexer/core/models.py","src/ai_indexer/exporters/base.py","src/ai_indexer/exporters/dsl.py","src/ai_indexer/exporters/html.py","src/ai_indexer/exporters/toon.py","src/ai_indexer/exporters/xml_exporter.py","src/ai_indexer/gui/app.py","src/ai_indexer/gui/components/files_table.py","src/ai_indexer/gui/components/hotspots_panel.py","src/ai_indexer/gui/components/log_console.py","src/ai_indexer/gui/components/output_panel.py","src/ai_indexer/gui/components/project_panel.py","src/ai_indexer/gui/components/warnings_panel.py","src/ai_indexer/gui/engine_worker.py","src/ai_indexer/gui/main_window.py","src/ai_indexer/main.py","src/ai_indexer/mcp/http_server.py","src/ai_indexer/mcp/server.py","src/ai_indexer/parsers/base.py","src/ai_indexer/parsers/python.py","src/ai_indexer/parsers/typescript.py","src/ai_indexer/tours/generator.py","src/ai_indexer/utils/config.py","src/ai_indexer/utils/git_context.py","src/ai_indexer/utils/io.py","src/ai_indexer/utils/security.py","src/ai_indexer/utils/ui.py"]);const HEALTH_SCORE=0.7344;const PROJECT_NAME="ai-indexer";</script>
+
+
+<style>/* Code Nebula v8 — Mobile-first responsive theme */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #060912;
+  --panel: rgba(8, 14, 30, 0.92);
+  --border: rgba(80, 130, 255, 0.18);
+  --text: #dce8ff;
+  --muted: #6a85b0;
+  --accent: #4d9dff;
+  --critical: #ff4f4f;
+  --infra: #4d9dff;
+  --config: #2dd89a;
+  --supporting: #8899aa;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  height: 100dvh;
+  touch-action: manipulation;
+}
+
+/* ── Nebula canvas ─────────────────────────────────────────────────── */
+#nebula-view { position: fixed; inset: 0; }
+#nebula-canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+
+/* ── Dashboard view ────────────────────────────────────────────────── */
+#dash-view {
+  display: none;
+  position: fixed; inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #f0f4f8;
+  padding: 12px 10px 80px;
+}
+
+/* ── Controls bar — mobile: bottom centre for thumb reach ──────────── */
+#nebula-controls {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 8px;
+  z-index: 20;
+}
+.nb-btn {
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0 18px;
+  height: 44px;
+  min-width: 72px;
+  border-radius: 22px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  transition: background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  display: flex; align-items: center; justify-content: center;
+}
+.nb-btn:hover, .nb-btn:active {
+  background: rgba(20, 40, 90, 0.95);
+  border-color: var(--accent);
+}
+
+/* ── Zoom controls ─────────────────────────────────────────────────── */
+#zoom-controls {
+  position: fixed;
+  right: 14px;
+  bottom: 80px;   /* above main controls on mobile */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 20;
+}
+.zoom-btn {
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.zoom-btn:hover  { background: rgba(20,40,90,0.95); border-color: var(--accent); }
+.zoom-btn:active { transform: scale(0.92); }
+
+@media (min-width: 640px) {
+  #zoom-controls {
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+/* ── Info panel — mobile: bottom sheet ────────────────────────────── */
+#info-panel {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  width: 100%;
+  background: rgba(15, 15, 20, 0.65);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  border-radius: 18px 18px 0 0;
+  padding: 8px 18px 36px;
+  z-index: 30;
+  max-height: 62vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  /* Transition: slide up from bottom on mobile */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(18px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+#info-panel.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+/* drag handle */
+#info-panel::before {
+  content: '';
+  display: block;
+  width: 36px; height: 4px;
+  background: rgba(150, 180, 255, 0.28);
+  border-radius: 2px;
+  margin: 8px auto 14px;
+}
+#info-close {
+  position: absolute; top: 12px; right: 14px;
+  cursor: pointer; opacity: 0.5;
+  font-size: 22px; background: none; border: none; color: var(--text);
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+}
+#info-close:hover { opacity: 1; background: rgba(255,255,255,.08); }
+
+.ni-file {
+  font-size: 11px; font-family: monospace;
+  color: #93c5fd; word-break: break-all;
+  margin-bottom: 10px; padding-right: 28px;
+}
+.ni-row  { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.ni-label { font-size: 11px; color: var(--muted); }
+.ni-val   { font-size: 11px; font-weight: 600; color: var(--text); }
+.ni-hint  {
+  font-size: 10px; color: #a0b8d8; margin-top: 8px;
+  line-height: 1.5; border-top: 1px solid var(--border); padding-top: 8px;
+}
+.ni-re-bar {
+  height: 4px; border-radius: 2px; margin-top: 4px;
+  background: linear-gradient(90deg, #2dd89a, #ff4f4f);
+}
+.ni-warn { font-size: 10px; color: #fca5a5; margin-top: 4px; }
+
+/* ── Legend — mobile: floats above controls ────────────────────────── */
+#nebula-legend {
+  position: fixed;
+  bottom: 76px;
+  left: 10px; right: 10px;
+  background: var(--panel);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  z-index: 20;
+  display: none;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+.leg-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #bcd; }
+.leg-dot  { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── Project title ─────────────────────────────────────────────────── */
+#project-title {
+  position: fixed; top: 14px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px; font-weight: 700;
+  color: rgba(150, 190, 255, 0.6);
+  z-index: 20; letter-spacing: 0.07em; pointer-events: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  max-width: calc(100% - 28px);
+  overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ── Dashboard — mobile base ───────────────────────────────────────── */
+.container  { max-width: 1400px; margin: 0 auto; }
+.header     { margin-bottom: 14px; }
+.header h1  { font-size: 1.1rem; font-weight: 700; color: #0f172a; line-height: 1.3; }
+.subtitle   { font-size: 0.75rem; color: #64748b; margin-top: 2px; }
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.stat-card  {
+  background: #fff; border-radius: 12px; padding: 14px 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08); border: 1px solid #e2e8f0;
+}
+.stat-value { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
+.stat-label { font-size: 0.68rem; color: #64748b; margin-top: 2px; }
+
+.chart-card {
+  background: #fff; border-radius: 12px; padding: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08); border: 1px solid #e2e8f0;
+  margin-bottom: 14px;
+}
+.chart-card h2 { font-size: 0.88rem; font-weight: 600; color: #0f172a; margin-bottom: 12px; }
+
+.table-card {
+  background: #fff; border-radius: 12px; padding: 14px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08); border: 1px solid #e2e8f0;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+table { width: 100%; border-collapse: collapse; font-size: 0.72rem; min-width: 460px; }
+th {
+  text-align: left; padding: 8px; border-bottom: 2px solid #e2e8f0;
+  font-weight: 600; color: #64748b; white-space: nowrap;
+  cursor: pointer; user-select: none;
+}
+th:hover { color: #0f172a; }
+td {
+  padding: 7px 8px; border-bottom: 1px solid #f1f5f9;
+  color: #374151; font-family: monospace; font-size: 0.68rem;
+}
+tr:hover td { background: #f8fafc; }
+
+.badge { display: inline-block; padding: 2px 6px; border-radius: 999px; font-size: 0.63rem; font-weight: 600; }
+.badge-critical { background: #fee2e2; color: #dc2626; }
+.badge-infra    { background: #dbeafe; color: #2563eb; }
+.badge-config   { background: #d1fae5; color: #059669; }
+.badge-default  { background: #f1f5f9; color: #475569; }
+
+.warn-list  { display: flex; flex-direction: column; gap: 8px; }
+.warn-item  { background: #fffbeb; border-left: 3px solid #f59e0b; padding: 8px 12px; border-radius: 0 8px 8px 0; }
+.warn-file  { font-size: 0.72rem; font-weight: 600; color: #92400e; font-family: monospace; margin-bottom: 3px; word-break: break-all; }
+.warn-msg   { font-size: 0.67rem; color: #78350f; }
+
+#back-bar   { padding: 10px 0; text-align: center; }
+
+/* ── Tablet 640px+ ─────────────────────────────────────────────────── */
+@media (min-width: 640px) {
+  #nebula-controls {
+    bottom: auto;
+    top: 14px;
+  }
+  #project-title {
+    left: 14px;
+    transform: none;
+  }
+  #info-panel {
+    left: auto; right: 14px; bottom: auto; top: 56px;
+    width: 280px;
+    border-radius: 14px;
+    padding: 16px;
+    max-height: 75vh;
+    /* Desktop: slide in from right */
+    transform: translateX(12px);
+  }
+  #info-panel.open {
+    transform: translateX(0);
+  }
+  #info-panel::before { display: none; }
+  #nebula-legend {
+    bottom: 14px; left: 14px;
+    right: auto; max-width: 380px;
+  }
+  .stats-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat-value { font-size: 1.7rem; }
+  .stat-card  { padding: 16px; }
+  .header h1  { font-size: 1.45rem; }
+  .header     { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
+  #dash-view  { padding: 16px 16px 40px; }
+  .chart-card { padding: 18px 20px; margin-bottom: 22px; }
+  .table-card { padding: 18px 20px; margin-bottom: 22px; }
+  table       { min-width: unset; font-size: 0.78rem; }
+  td          { font-size: 0.75rem; padding: 7px 10px; }
+  th          { padding: 8px 10px; }
+}
+
+/* ── Desktop 1024px+ ───────────────────────────────────────────────── */
+@media (min-width: 1024px) {
+  .stats-grid { grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); }
+  #info-panel { width: 300px; }
+}
 </style>
-<div id="project-title">ai_indexer</div>
-<div id="nebula-view"><canvas id="nebula-canvas"></canvas></div>
+<style>
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;}
+.module-card{background:#f8fafc;border-radius:9px;padding:11px 13px;border:1px solid #e2e8f0;}
+.module-name{font-weight:600;font-size:.82rem;color:#0f172a;margin-bottom:4px;}
+.module-count{font-size:.70rem;color:#64748b;}
+.module-sample{font-size:.67rem;color:#94a3b8;font-family:monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}
+</style>
+
+<div id="project-title">ai-indexer</div>
+
+
+<div id="nebula-view">
+  <canvas id="nebula-canvas"></canvas>
+</div>
+
+
 <div id="nebula-controls">
   <button class="nb-btn" id="btn-to-dash">Dashboard</button>
   <button class="nb-btn" id="btn-tour">Tour</button>
   <button class="nb-btn" id="btn-legend">Legend</button>
+  <input id="nebula-search" type="text" placeholder="search file…" autocomplete="off"
+    style="background:rgba(10,20,50,.75);border:1px solid #2d4a8a;border-radius:6px;
+    color:#adc8ff;font:13px monospace;padding:4px 10px;outline:none;width:160px;">
+  <span id="nb-count" style="color:#4a6a9a;font:11px monospace;padding:0 6px;white-space:nowrap;"></span>
 </div>
+
+
+<div id="zoom-controls">
+  <button class="zoom-btn" id="btn-zoom-in"  aria-label="Zoom in">+</button>
+  <button class="zoom-btn" id="btn-zoom-out" aria-label="Zoom out">−</button>
+</div>
+
+
 <div id="info-panel">
   <button id="info-close">&times;</button>
   <div id="info-content"></div>
 </div>
-<div id="nebula-legend"><div class="leg-item"><div class="leg-dot" style="background:#ffd700"></div><span>auth</span></div>
-<div class="leg-item"><div class="leg-dot" style="background:#1a80ff"></div><span>database</span></div>
-<div class="leg-item"><div class="leg-dot" style="background:#ff19cc"></div><span>ui</span></div>
-<div class="leg-item"><div class="leg-dot" style="background:#19e699"></div><span>api</span></div>
-<div class="leg-item"><div class="leg-dot" style="background:#f2c141"></div><span>billing</span></div>
-<div class="leg-item"><div class="leg-dot" style="background:#80e619"></div><span>utils</span></div>
-<div class="leg-item"><div class="leg-dot" style="background:#e6990a"></div><span>config</span></div>
-<div class="leg-item"><div class="leg-dot" style="background:#66b3ff"></div><span>cache</span></div>
-<div class="leg-item"><div class="leg-dot" style="background:#ff5050"></div><span>security</span></div>
-<div class="leg-item"><div class="leg-dot" style="background:#e0e0e0"></div><span>shared</span></div></div>
+
+
+<div id="nebula-legend">
+  
+  <div class="leg-item legend-item" data-domain="auth" style="cursor:pointer">
+    <div class="leg-dot" style="background:#ffd700"></div>
+    <span>auth</span>
+  </div>
+  
+  <div class="leg-item legend-item" data-domain="database" style="cursor:pointer">
+    <div class="leg-dot" style="background:#1a80ff"></div>
+    <span>database</span>
+  </div>
+  
+  <div class="leg-item legend-item" data-domain="ui" style="cursor:pointer">
+    <div class="leg-dot" style="background:#ff19cc"></div>
+    <span>ui</span>
+  </div>
+  
+  <div class="leg-item legend-item" data-domain="api" style="cursor:pointer">
+    <div class="leg-dot" style="background:#19e699"></div>
+    <span>api</span>
+  </div>
+  
+  <div class="leg-item legend-item" data-domain="billing" style="cursor:pointer">
+    <div class="leg-dot" style="background:#f2c141"></div>
+    <span>billing</span>
+  </div>
+  
+  <div class="leg-item legend-item" data-domain="utils" style="cursor:pointer">
+    <div class="leg-dot" style="background:#80e619"></div>
+    <span>utils</span>
+  </div>
+  
+  <div class="leg-item legend-item" data-domain="config" style="cursor:pointer">
+    <div class="leg-dot" style="background:#e6990a"></div>
+    <span>config</span>
+  </div>
+  
+  <div class="leg-item legend-item" data-domain="cache" style="cursor:pointer">
+    <div class="leg-dot" style="background:#66b3ff"></div>
+    <span>cache</span>
+  </div>
+  
+  <div class="leg-item legend-item" data-domain="security" style="cursor:pointer">
+    <div class="leg-dot" style="background:#ff5050"></div>
+    <span>security</span>
+  </div>
+  
+  <div class="leg-item legend-item" data-domain="shared" style="cursor:pointer">
+    <div class="leg-dot" style="background:#e0e0e0"></div>
+    <span>shared</span>
+  </div>
+  
+</div>
+
+
 <div id="dash-view">
   <div class="container">
     <div class="header">
       <div>
-        <h1>AI Context Index &middot; ai_indexer</h1>
-        <div class="subtitle">Generated 2026-04-14 19:37:03 &middot; v0.0.2</div>
+        <h1>AI Context Index &middot; ai-indexer</h1>
+        <div class="subtitle">Generated 2026-04-17 03:16:17 &middot; v0.0.7</div>
       </div>
     </div>
-    <div class="stats-grid"><div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Total Files</div></div><div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Critical</div></div><div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Domains</div></div><div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Entrypoints</div></div></div>
-    <div class="table-card"><h2 style="font-size:.95rem;font-weight:600;color:#0f172a;margin-bottom:12px;">Top 20 Hotspots</h2><table><thead><tr><th>File</th><th>Criticality</th><th>Priority</th><th>Domain</th><th>Refactor Effort</th><th>Blast Radius</th></tr></thead><tbody></tbody></table></div>
-    <div class="chart-card"><h2>Modules</h2><div class="modules-grid"></div></div>
-    <div class="chart-card"><h2>Architectural Warnings (0 files)</h2><div class="warn-list"><p style="color:#64748b;font-size:.83rem;">No warnings detected.</p></div></div>
+
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">32</div>
+        <div class="stat-label">Total Files</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">0</div>
+        <div class="stat-label">Critical</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">3</div>
+        <div class="stat-label">Domains</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">3</div>
+        <div class="stat-label">Entrypoints</div>
+      </div>
+    </div>
+
+    
+    <div class="table-card">
+      <h2 style="font-size:.95rem;font-weight:600;color:#0f172a;margin-bottom:12px;">Top 20 Hotspots</h2>
+      <table>
+        <thead><tr>
+          <th>File</th><th>Criticality</th><th>Priority</th>
+          <th>Domain</th><th>Refactor Effort</th><th>Blast Radius</th>
+        </tr></thead>
+        <tbody>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/main.py</td>
+            <td><span class="badge badge-default">c</span></td>
+            <td>80</td>
+            <td>ai</td>
+            <td>1561.2</td>
+            <td>2</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/mcp/server.py</td>
+            <td><span class="badge badge-default">c</span></td>
+            <td>74</td>
+            <td>ai</td>
+            <td>504.9</td>
+            <td>3</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/core/engine.py</td>
+            <td><span class="badge badge-default">c</span></td>
+            <td>72</td>
+            <td>auth</td>
+            <td>1214.2</td>
+            <td>4</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/gui/app.py</td>
+            <td><span class="badge badge-default">c</span></td>
+            <td>68</td>
+            <td>ai</td>
+            <td>463.0</td>
+            <td>0</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/gui/main_window.py</td>
+            <td><span class="badge badge-default">c</span></td>
+            <td>66</td>
+            <td>ai</td>
+            <td>1176.0</td>
+            <td>1</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/core/cache.py</td>
+            <td><span class="badge badge-default">c</span></td>
+            <td>60</td>
+            <td>ai</td>
+            <td>379.7</td>
+            <td>4</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/core/models.py</td>
+            <td><span class="badge badge-default">c</span></td>
+            <td>60</td>
+            <td>ai</td>
+            <td>210.6</td>
+            <td>6</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/mcp/http_server.py</td>
+            <td><span class="badge badge-default">c</span></td>
+            <td>58</td>
+            <td>ai</td>
+            <td>476.6</td>
+            <td>2</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/gui/engine_worker.py</td>
+            <td><span class="badge badge-default">s</span></td>
+            <td>38</td>
+            <td>ai</td>
+            <td>601.2</td>
+            <td>2</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/parsers/typescript.py</td>
+            <td><span class="badge badge-default">c</span></td>
+            <td>38</td>
+            <td>ai</td>
+            <td>821.7</td>
+            <td>4</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/gui/components/files_table.py</td>
+            <td><span class="badge badge-default">s</span></td>
+            <td>36</td>
+            <td>ai</td>
+            <td>538.5</td>
+            <td>2</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/gui/components/output_panel.py</td>
+            <td><span class="badge badge-default">s</span></td>
+            <td>36</td>
+            <td>ai</td>
+            <td>372.5</td>
+            <td>2</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/gui/components/project_panel.py</td>
+            <td><span class="badge badge-default">s</span></td>
+            <td>36</td>
+            <td>ai</td>
+            <td>817.0</td>
+            <td>2</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/utils/io.py</td>
+            <td><span class="badge badge-default">s</span></td>
+            <td>35</td>
+            <td>ai</td>
+            <td>261.9</td>
+            <td>7</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/exporters/dsl.py</td>
+            <td><span class="badge badge-default">s</span></td>
+            <td>34</td>
+            <td>ai</td>
+            <td>296.1</td>
+            <td>4</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/exporters/html.py</td>
+            <td><span class="badge badge-default">s</span></td>
+            <td>34</td>
+            <td>ai</td>
+            <td>920.7</td>
+            <td>2</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/exporters/toon.py</td>
+            <td><span class="badge badge-default">s</span></td>
+            <td>34</td>
+            <td>ai</td>
+            <td>714.8</td>
+            <td>2</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/exporters/xml_exporter.py</td>
+            <td><span class="badge badge-default">s</span></td>
+            <td>34</td>
+            <td>ai</td>
+            <td>453.7</td>
+            <td>2</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/parsers/python.py</td>
+            <td><span class="badge badge-default">s</span></td>
+            <td>34</td>
+            <td>ai</td>
+            <td>475.0</td>
+            <td>4</td>
+          </tr>
+          
+          
+          
+          <tr>
+            <td>src/ai_indexer/tours/generator.py</td>
+            <td><span class="badge badge-default">s</span></td>
+            <td>34</td>
+            <td>ai</td>
+            <td>413.7</td>
+            <td>2</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+
+    
+    <div class="chart-card">
+      <h2>Modules</h2>
+      <div class="modules-grid">
+        
+        <div class="module-card">
+          <div class="module-name">src/ai</div>
+          <div class="module-count">30 files</div>
+          <div class="module-sample">src/ai_indexer/main.py</div>
+        </div>
+        
+        <div class="module-card">
+          <div class="module-name">src/auth</div>
+          <div class="module-count">1 file</div>
+          <div class="module-sample">src/ai_indexer/core/engine.py</div>
+        </div>
+        
+        <div class="module-card">
+          <div class="module-name">src/database</div>
+          <div class="module-count">1 file</div>
+          <div class="module-sample">src/ai_indexer/utils/security.py</div>
+        </div>
+        
+      </div>
+    </div>
+
+    
+    <div class="chart-card">
+      <h2>Architectural Warnings (1 files)</h2>
+      <div class="warn-list">
+        
+          
+          <div class="warn-item">
+            <div class="warn-file">src/ai_indexer/parsers/base.py</div>
+            
+            <div class="warn-msg">&bull; 📭 Orphan file — no file imports it and it&#39;s not an entrypoint</div>
+            
+          </div>
+          
+        
+      </div>
+    </div>
+
     <div id="back-bar">
       <button class="nb-btn" id="btn-to-nebula" style="background:#1a3460;border-color:#2d5a9e;">
         Back to Nebula
@@ -56,29 +745,609 @@
     </div>
   </div>
 </div>
-<script></script>
-<script>
-function switchView(v){
-  var nv=document.getElementById('nebula-view');
-  var dv=document.getElementById('dash-view');
-  var nc=document.getElementById('nebula-controls');
-  var lg=document.getElementById('nebula-legend');
-  var ip=document.getElementById('info-panel');
-  var pt=document.getElementById('project-title');
-  if(v==='nebula'){
-    nv.style.display='block';dv.style.display='none';
-    nc.style.display='flex';pt.style.display='block';
-    document.body.style.overflow='hidden';
-  } else {
-    nv.style.display='none';dv.style.display='block';
-    nc.style.display='none';lg.style.display='none';
-    ip.style.display='none';pt.style.display='none';
-    document.body.style.overflow='auto';document.body.style.background='#f0f4f8';
+
+
+<script>/**
+ * Code Nebula v8 — Cinematic Three.js visualisation
+ *
+ * Features:
+ *  - UnrealBloomPass via EffectComposer (nodes with priority > 80 glow intensely)
+ *  - QuadraticBezierCurve3 edges with directional particle flow
+ *  - Gas cloud (Points) around module clusters
+ *  - CSS2DRenderer labels (crisp typography)
+ *  - TWEEN.js fly-to-node animations on click
+ */
+
+// ── Scene setup ───────────────────────────────────────────────────────────────
+const canvas    = document.getElementById("nebula-canvas");
+const isMobile  = window.innerWidth < 640 || ('ontouchstart' in window);
+const renderer  = new THREE.WebGLRenderer({ canvas, antialias: !isMobile, alpha: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, isMobile ? 1.5 : 2));
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(55, canvas.clientWidth / canvas.clientHeight, 0.1, 6000);
+camera.position.set(0, 0, 380);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping   = true;
+controls.dampingFactor   = 0.04;
+controls.autoRotate      = true;
+controls.autoRotateSpeed = 0.25;
+controls.minDistance     = 30;
+controls.maxDistance     = 1500;
+
+// ── Effect Composer + Bloom ───────────────────────────────────────────────────
+const composer   = new THREE.EffectComposer(renderer);
+composer.addPass(new THREE.RenderPass(scene, camera));
+const bloomPass  = new THREE.UnrealBloomPass(
+  new THREE.Vector2(canvas.clientWidth, canvas.clientHeight),
+  1.2, 0.6, 0.45
+);
+composer.addPass(bloomPass);
+
+// ── CSS2D label renderer ──────────────────────────────────────────────────────
+const labelRenderer = new THREE.CSS2DRenderer();
+labelRenderer.setSize(canvas.clientWidth, canvas.clientHeight);
+labelRenderer.domElement.style.cssText =
+  "position:absolute;top:0;left:0;pointer-events:none;";
+document.getElementById("nebula-view").appendChild(labelRenderer.domElement);
+
+// ── Ambient nebula background ─────────────────────────────────────────────────
+const nebVS = `
+  varying vec2 vUv;
+  void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }
+`;
+const nebFS = `
+  varying vec2 vUv;
+  uniform float uTime, uHealth;
+  float h21(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5); }
+  float noise(vec2 p){
+    vec2 i=floor(p),f=fract(p),u=f*f*(3.-2.*f);
+    return mix(mix(h21(i),h21(i+vec2(1,0)),u.x),mix(h21(i+vec2(0,1)),h21(i+vec2(1,1)),u.x),u.y);
   }
+  void main(){
+    vec2 uv=(vUv-.5)*3.;
+    float n=noise(uv*1.2+uTime*.025)+noise(uv*2.5-uTime*.018)*.5+noise(uv*5.+uTime*.01)*.25;
+    n=clamp(n/1.5,0.,1.);
+    vec3 cold=mix(vec3(.01,.02,.08),vec3(.03,.09,.24),n);
+    vec3 warm=mix(vec3(.07,.02,.01),vec3(.28,.08,.0),n);
+    gl_FragColor=vec4(mix(warm,cold,uHealth),n*.15+.04);
+  }
+`;
+const nebMat = new THREE.ShaderMaterial({
+  vertexShader: nebVS, fragmentShader: nebFS,
+  uniforms: { uTime: { value: 0 }, uHealth: { value: HEALTH_SCORE } },
+  transparent: true, depthWrite: false, side: THREE.DoubleSide,
+});
+const nebPlane = new THREE.Mesh(new THREE.PlaneGeometry(5000, 5000), nebMat);
+nebPlane.position.z = -900;
+scene.add(nebPlane);
+
+// ── Background stars ──────────────────────────────────────────────────────────
+(function buildBgStars() {
+  const N = 2500, pos = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) {
+    const r  = 450 + Math.random() * 650;
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(2 * Math.random() - 1);
+    pos[i*3]   = r * Math.sin(ph) * Math.cos(th);
+    pos[i*3+1] = r * Math.sin(ph) * Math.sin(th);
+    pos[i*3+2] = r * Math.cos(ph);
+  }
+  const bg = new THREE.BufferGeometry();
+  bg.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  scene.add(new THREE.Points(bg, new THREE.PointsMaterial({
+    color: 0xffffff, size: 0.55, transparent: true, opacity: 0.35, sizeAttenuation: true,
+  })));
+})();
+
+// ── Domain colour palette ─────────────────────────────────────────────────────
+const DC = {
+  auth: new THREE.Color(1,0.85,0.1), database: new THREE.Color(0.1,0.5,1),
+  ui: new THREE.Color(1,0.1,0.8),    api: new THREE.Color(0.1,0.9,0.6),
+  services: new THREE.Color(0.6,0.3,1), utils: new THREE.Color(0.5,0.9,0.2),
+  config: new THREE.Color(0.9,0.6,0.1), billing: new THREE.Color(0.95,0.75,0.1),
+  leads: new THREE.Color(0.2,1,0.4),    cache: new THREE.Color(0.4,0.7,1),
+  security: new THREE.Color(1,0.3,0.3), search: new THREE.Color(0.3,0.85,0.7),
+  default: new THREE.Color(0.4,0.4,0.6),
+};
+function domCol(d) { return DC[d] || DC.default; }
+
+// ── Force layout ──────────────────────────────────────────────────────────────
+const fileKeys = Object.keys(ALL_FILES);
+const N_nodes  = fileKeys.length;
+const dirCenters = {};
+const nodes = fileKeys.map((k, i) => {
+  const fd  = ALL_FILES[k];
+  const dir = k.split("/").slice(0, -1).join("/") || "root";
+  if (!dirCenters[dir]) {
+    const ang = Object.keys(dirCenters).length * 2.399;
+    const r   = 30 + Math.sqrt(Object.keys(dirCenters).length) * 28;
+    dirCenters[dir] = {
+      x: r * Math.cos(ang), y: r * Math.sin(ang) * 0.6, z: (Math.random()-0.5)*70,
+    };
+  }
+  const dc = dirCenters[dir];
+  return {
+    k, fd, idx: i,
+    x: dc.x + (Math.random()-0.5)*28, y: dc.y + (Math.random()-0.5)*28, z: dc.z + (Math.random()-0.5)*28,
+    vx: 0, vy: 0, vz: 0, seed: Math.random() * Math.PI * 2,
+  };
+});
+const nodeIdx = {};
+fileKeys.forEach((k, i) => { nodeIdx[k] = i; });
+
+(function forceLayout() {
+  const kIdeal = Math.sqrt(55000 / Math.max(N_nodes, 1));
+  const step   = Math.max(1, Math.floor(N_nodes / 80));
+  for (let iter = 0; iter < 90; iter++) {
+    const cool = 0.92 - iter * 0.007;
+    for (let i = 0; i < N_nodes; i += step) {
+      for (let j = i+1; j < N_nodes; j += step) {
+        const ni=nodes[i], nj=nodes[j];
+        const dx=nj.x-ni.x, dy=nj.y-ni.y, dz=nj.z-ni.z;
+        const dist=Math.sqrt(dx*dx+dy*dy+dz*dz)+1;
+        const f=Math.min(kIdeal*kIdeal/dist,160), inv=1/dist;
+        ni.vx-=dx*inv*f; ni.vy-=dy*inv*f; ni.vz-=dz*inv*f;
+        nj.vx+=dx*inv*f; nj.vy+=dy*inv*f; nj.vz+=dz*inv*f;
+      }
+    }
+    FULL_EDGES.forEach(([src,dst]) => {
+      const ni=nodes[nodeIdx[src]], nj=nodes[nodeIdx[dst]];
+      if(!ni||!nj) return;
+      const dx=nj.x-ni.x, dy=nj.y-ni.y, dz=nj.z-ni.z;
+      const dist=Math.sqrt(dx*dx+dy*dy+dz*dz)+1;
+      const f=Math.min(Math.max((dist-kIdeal)*0.03,-18),18), inv=1/dist;
+      ni.vx+=dx*inv*f; ni.vy+=dy*inv*f; ni.vz+=dz*inv*f;
+      nj.vx-=dx*inv*f; nj.vy-=dy*inv*f; nj.vz-=dz*inv*f;
+    });
+    nodes.forEach(n => {
+      const sp=Math.sqrt(n.vx*n.vx+n.vy*n.vy+n.vz*n.vz);
+      if(sp>35){const s=35/sp; n.vx*=s; n.vy*=s; n.vz*=s;}
+      n.x+=n.vx*cool; n.y+=n.vy*cool; n.z+=n.vz*cool;
+      n.vx*=0.6; n.vy*=0.6; n.vz*=0.6;
+    });
+  }
+  nodes.forEach(n => {
+    if(!isFinite(n.x)) n.x=(Math.random()-.5)*120;
+    if(!isFinite(n.y)) n.y=(Math.random()-.5)*120;
+    if(!isFinite(n.z)) n.z=(Math.random()-.5)*120;
+  });
+})();
+
+// ── Node geometry ─────────────────────────────────────────────────────────────
+const posArr  = new Float32Array(N_nodes * 3);
+const colArr  = new Float32Array(N_nodes * 3);
+const sizeArr = new Float32Array(N_nodes);
+const seedArr = new Float32Array(N_nodes);
+nodes.forEach((n, i) => {
+  posArr[i*3]=n.x; posArr[i*3+1]=n.y; posArr[i*3+2]=n.z;
+  const col=domCol(n.fd.domain);
+  colArr[i*3]=col.r; colArr[i*3+1]=col.g; colArr[i*3+2]=col.b;
+  sizeArr[i] = 2.5 + (n.fd.priority||0)*0.08;
+  seedArr[i] = n.seed;
+});
+
+// ── Spawn stagger: animate node sizes from 0 → final over 1.6s ───────────────
+const _targetSizes = new Float32Array(sizeArr);  // snapshot final sizes
+sizeArr.fill(0);                                  // start invisible
+const _spawnStart = performance.now();
+const _SPAWN_MS   = 1600;
+
+const starVS = `
+  attribute float aSize; attribute vec3 aColor; attribute float aSeed;
+  uniform float uTime; varying vec3 vColor; varying float vGlow;
+  void main(){
+    vColor=aColor;
+    float pulse=1.+0.12*sin(uTime*2.+aSeed*6.28);
+    vGlow=aSize>9.?1.:0.;
+    gl_PointSize=aSize*pulse;
+    gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);
+  }
+`;
+const starFS = `
+  varying vec3 vColor; varying float vGlow;
+  void main(){
+    vec2 uv=gl_PointCoord*2.-1.; float d=dot(uv,uv);
+    if(d>1.) discard;
+    float alpha=exp(-d*3.5)+exp(-d*1.2)*.4;
+    gl_FragColor=vec4(vColor*(1.+vGlow*2.),alpha);
+  }
+`;
+const starGeo = new THREE.BufferGeometry();
+starGeo.setAttribute("position", new THREE.BufferAttribute(posArr, 3));
+starGeo.setAttribute("aColor",   new THREE.BufferAttribute(colArr, 3));
+starGeo.setAttribute("aSize",    new THREE.BufferAttribute(sizeArr, 1));
+starGeo.setAttribute("aSeed",    new THREE.BufferAttribute(seedArr, 1));
+const starMat = new THREE.ShaderMaterial({
+  vertexShader: starVS, fragmentShader: starFS,
+  uniforms: { uTime: { value: 0 } },
+  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+});
+const stars = new THREE.Points(starGeo, starMat);
+scene.add(stars);
+
+// ── QuadraticBezierCurve3 edges + directional flow ────────────────────────────
+const edgePositions = [], flowParts = [];
+FULL_EDGES.slice(0, 600).forEach(([srcK, dstK]) => {
+  const ni=nodes[nodeIdx[srcK]], nj=nodes[nodeIdx[dstK]];
+  if(!ni||!nj) return;
+  const src=new THREE.Vector3(ni.x,ni.y,ni.z);
+  const dst=new THREE.Vector3(nj.x,nj.y,nj.z);
+  const mid=src.clone().lerp(dst,0.5).add(
+    new THREE.Vector3((Math.random()-.5)*30,(Math.random()-.5)*30,(Math.random()-.5)*20)
+  );
+  const curve=new THREE.QuadraticBezierCurve3(src,mid,dst);
+  const pts=curve.getPoints(24);
+  for(let i=0;i<pts.length-1;i++){
+    edgePositions.push(pts[i].x,pts[i].y,pts[i].z,pts[i+1].x,pts[i+1].y,pts[i+1].z);
+  }
+  flowParts.push({curve, t:Math.random(), speed:0.004+Math.random()*0.006});
+});
+if(edgePositions.length){
+  const eg=new THREE.BufferGeometry();
+  eg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(edgePositions),3));
+  scene.add(new THREE.LineSegments(eg,new THREE.LineBasicMaterial({
+    color:0x2255aa, transparent:true, opacity:0.18,
+    blending:THREE.AdditiveBlending, depthWrite:false,
+  })));
 }
-document.getElementById('btn-to-dash').addEventListener('click',function(){switchView('dash');});
-var nb=document.getElementById('btn-to-nebula');
-if(nb) nb.addEventListener('click',function(){switchView('nebula');});
+const fPosArr=new Float32Array(flowParts.length*3);
+const fGeo=new THREE.BufferGeometry();
+fGeo.setAttribute("position",new THREE.BufferAttribute(fPosArr,3));
+scene.add(new THREE.Points(fGeo,new THREE.PointsMaterial({
+  color:0x88ccff, size:3.5, transparent:true, opacity:0.75,
+  blending:THREE.AdditiveBlending, depthWrite:false, sizeAttenuation:true,
+})));
+
+// ── Gas Cloud around module clusters ─────────────────────────────────────────
+Object.values(MODULES_DATA).forEach(files => {
+  if(files.length < 3) return;
+  const center=new THREE.Vector3();
+  let count=0;
+  files.forEach(k=>{const n=nodes[nodeIdx[k]]; if(n){center.add(new THREE.Vector3(n.x,n.y,n.z));count++;}});
+  if(!count) return;
+  center.divideScalar(count);
+  const N=180, pos=new Float32Array(N*3), rad=20+files.length*1.5;
+  for(let i=0;i<N;i++){
+    const r=rad*(0.3+Math.random()*0.7);
+    const th=Math.random()*Math.PI*2, ph=Math.acos(2*Math.random()-1);
+    pos[i*3]=center.x+r*Math.sin(ph)*Math.cos(th);
+    pos[i*3+1]=center.y+r*Math.sin(ph)*Math.sin(th)*0.6;
+    pos[i*3+2]=center.z+r*Math.cos(ph)*0.6;
+  }
+  const cg=new THREE.BufferGeometry();
+  cg.setAttribute("position",new THREE.BufferAttribute(pos,3));
+  scene.add(new THREE.Points(cg,new THREE.PointsMaterial({
+    color:0x334466, size:5, transparent:true, opacity:0.07,
+    blending:THREE.AdditiveBlending, depthWrite:false, sizeAttenuation:true,
+  })));
+});
+
+// ── CSS2D Labels ──────────────────────────────────────────────────────────────
+nodes.forEach(n => {
+  if(n.fd.priority < 70 && !n.fd.entrypoint) return;
+  const div=document.createElement("div");
+  div.style.cssText="font:600 9px/1 monospace;color:#9ac;background:rgba(5,10,25,.7);padding:1px 4px;border-radius:3px;pointer-events:none;white-space:nowrap;";
+  div.textContent = n.k.split("/").pop() || n.k;  // safe: textContent only
+  const label=new THREE.CSS2DObject(div);
+  label.position.set(n.x, n.y+sizeArr[n.idx]*0.6+2, n.z);
+  scene.add(label);
+});
+
+// ── Info panel (safe DOM — no innerHTML with untrusted data) ──────────────────
+const infoPan = document.getElementById("info-panel");
+const infoCls = document.getElementById("info-close");
+infoCls.addEventListener("click", ()=>{ infoPan.classList.remove("open"); resetHighlight(); });
+
+function makeRow(label, value) {
+  const row=document.createElement("div"); row.className="ni-row";
+  const l=document.createElement("span"); l.className="ni-label"; l.textContent=label;
+  const v=document.createElement("span"); v.className="ni-val";   v.textContent=value;
+  row.appendChild(l); row.appendChild(v);
+  return row;
+}
+
+function showInfo(idx) {
+  const n=nodes[idx]; if(!n) return;
+  const fd=n.fd;
+  const content=document.getElementById("info-content");
+  while(content.firstChild) content.removeChild(content.firstChild);
+
+  const fileDiv=document.createElement("div"); fileDiv.className="ni-file";
+  fileDiv.textContent=fd.file||n.k;
+  content.appendChild(fileDiv);
+
+  content.appendChild(makeRow("domain",      fd.domain||"–"));
+  content.appendChild(makeRow("priority",    String(fd.priority||0)));
+  content.appendChild(makeRow("criticality", fd.criticality||"–"));
+  content.appendChild(makeRow("fan-in",      String(fd.fan_in||0)));
+
+  const re=fd.refactor_effort != null ? fd.refactor_effort.toFixed(2) : "–";
+  content.appendChild(makeRow("refactor effort", re));
+
+  // Effort bar
+  const bar=document.createElement("div"); bar.className="ni-re-bar";
+  const pct=Math.min(100,(parseFloat(re)/150)*100)||0;
+  bar.style.width=pct+"%";
+  content.appendChild(bar);
+
+  content.appendChild(makeRow("blast radius", String(fd.blast_radius||0)+" files"));
+
+  if(fd.role_hint){
+    const hint=document.createElement("div"); hint.className="ni-hint";
+    hint.textContent=fd.role_hint;
+    content.appendChild(hint);
+  }
+  (fd.warnings||[]).slice(0,2).forEach(w=>{
+    const d=document.createElement("div"); d.className="ni-warn";
+    d.textContent="⚠ "+w;
+    content.appendChild(d);
+  });
+
+  infoPan.classList.add("open");
+
+  // Highlight clicked node and its direct neighbors; dim the rest
+  const neighborKeys=new Set([n.k]);
+  FULL_EDGES.forEach(([s,dst])=>{
+    if(s===n.k) neighborKeys.add(dst);
+    if(dst===n.k) neighborKeys.add(s);
+  });
+  nodes.forEach((nd,i)=>{
+    const match=neighborKeys.has(nd.k);
+    const base=2.5+(nd.fd.priority||0)*0.08;
+    sizeArr[i]=match ? base*(nd.k===n.k ? 1.7 : 1.0) : 0.4;
+    const dim=match ? 1.0 : 0.1;
+    const c=domCol(nd.fd.domain);
+    colArr[i*3]=c.r*dim; colArr[i*3+1]=c.g*dim; colArr[i*3+2]=c.b*dim;
+  });
+  starGeo.getAttribute("aSize").needsUpdate=true;
+  starGeo.getAttribute("aColor").needsUpdate=true;
+}
+
+function resetHighlight(){
+  nodes.forEach((nd,i)=>{
+    sizeArr[i]=2.5+(nd.fd.priority||0)*0.08;
+    const c=domCol(nd.fd.domain);
+    colArr[i*3]=c.r; colArr[i*3+1]=c.g; colArr[i*3+2]=c.b;
+  });
+  starGeo.getAttribute("aSize").needsUpdate=true;
+  starGeo.getAttribute("aColor").needsUpdate=true;
+}
+
+// ── Raycaster + click / tap ───────────────────────────────────────────────────
+const ray=new THREE.Raycaster();
+ray.params.Points.threshold = isMobile ? 8 : 4;
+const mouse=new THREE.Vector2();
+
+function handlePick(clientX, clientY) {
+  const rect=canvas.getBoundingClientRect();
+  mouse.x=((clientX-rect.left)/rect.width)*2-1;
+  mouse.y=-((clientY-rect.top)/rect.height)*2+1;
+  ray.setFromCamera(mouse,camera);
+  const hits=ray.intersectObject(stars);
+  if(hits.length){ showInfo(hits[0].index); flyToNode(hits[0].index); }
+  else { infoPan.classList.remove("open"); resetHighlight(); }
+}
+
+// Mouse click (desktop)
+canvas.addEventListener("click", evt => {
+  evt.preventDefault();
+  handlePick(evt.clientX, evt.clientY);
+});
+
+// Touch tap (mobile) — distinguish tap from orbit swipe
+let _touchStart = null;
+canvas.addEventListener("touchstart", evt => {
+  if(evt.touches.length === 1)
+    _touchStart = { x: evt.touches[0].clientX, y: evt.touches[0].clientY };
+  else
+    _touchStart = null;
+}, { passive: true });
+canvas.addEventListener("touchend", evt => {
+  if(!_touchStart || evt.changedTouches.length !== 1) return;
+  const t = evt.changedTouches[0];
+  const dx = t.clientX - _touchStart.x, dy = t.clientY - _touchStart.y;
+  if(Math.sqrt(dx*dx + dy*dy) > 12) return; // swipe — let OrbitControls handle it
+  evt.preventDefault();
+  handlePick(t.clientX, t.clientY);
+}, { passive: false });
+
+// ── TWEEN fly-to-node ─────────────────────────────────────────────────────────
+function flyToNode(idx) {
+  const n=nodes[idx];
+  const target=new THREE.Vector3(n.x,n.y,n.z);
+  const dest=target.clone().add(new THREE.Vector3(0,0,65));
+  controls.autoRotate=false;
+  new TWEEN.Tween(camera.position)
+    .to({x:dest.x,y:dest.y,z:dest.z},900)
+    .easing(TWEEN.Easing.Cubic.InOut).start();
+  new TWEEN.Tween(controls.target)
+    .to({x:target.x,y:target.y,z:target.z},900)
+    .easing(TWEEN.Easing.Cubic.InOut).start();
+}
+
+// ── Guided tour ───────────────────────────────────────────────────────────────
+let tourActive=false, tourIdx=0, tourTimer=null;
+const tourNodes=nodes.filter(n=>n.fd.entrypoint||n.fd.criticality==="critical").slice(0,10);
+document.getElementById("btn-tour").addEventListener("click", function() {
+  if(tourActive){ tourActive=false; clearTimeout(tourTimer); this.textContent="Tour"; controls.autoRotate=true; }
+  else { tourActive=true; controls.autoRotate=false; this.textContent="Stop"; advanceTour(); }
+});
+function advanceTour(){
+  if(!tourActive||!tourNodes.length) return;
+  const n=tourNodes[tourIdx%tourNodes.length];
+  flyToNode(n.idx); showInfo(n.idx); tourIdx++;
+  tourTimer=setTimeout(advanceTour,3200);
+}
+
+// ── Legend toggle ─────────────────────────────────────────────────────────────
+document.getElementById("btn-legend").addEventListener("click", ()=>{
+  const el=document.getElementById("nebula-legend");
+  el.style.display=el.style.display==="none"?"flex":"none";
+});
+
+// ── Domain filter (clickable legend pills) ────────────────────────────────────
+let activeDomain=null;
+document.querySelectorAll(".legend-item[data-domain]").forEach(el=>{
+  el.style.cursor="pointer";
+  el.addEventListener("click",()=>{
+    const d=el.dataset.domain;
+    activeDomain=activeDomain===d?null:d;
+    document.querySelectorAll(".legend-item[data-domain]").forEach(li=>{
+      li.style.opacity=(!activeDomain||li.dataset.domain===activeDomain)?"1":"0.3";
+    });
+    nodes.forEach((n,i)=>{
+      const match=!activeDomain||n.fd.domain===activeDomain;
+      sizeArr[i]=match?(2.5+(n.fd.priority||0)*0.08):0.3;
+      const dim=match?1.0:0.12;
+      const c=domCol(n.fd.domain);
+      colArr[i*3]=c.r*dim; colArr[i*3+1]=c.g*dim; colArr[i*3+2]=c.b*dim;
+    });
+    starGeo.getAttribute("aSize").needsUpdate=true;
+    starGeo.getAttribute("aColor").needsUpdate=true;
+  });
+});
+
+// ── Search bar ────────────────────────────────────────────────────────────────
+const _searchEl=document.getElementById("nebula-search");
+if(_searchEl){
+  _searchEl.addEventListener("input",function(){
+    const q=this.value.toLowerCase().trim();
+    nodes.forEach((n,i)=>{
+      const match=!q||n.k.toLowerCase().includes(q);
+      sizeArr[i]=match?(2.5+(n.fd.priority||0)*0.08):0.3;
+      const dim=(!q||match)?1.0:0.15;
+      const c=domCol(n.fd.domain);
+      colArr[i*3]=c.r*dim; colArr[i*3+1]=c.g*dim; colArr[i*3+2]=c.b*dim;
+    });
+    starGeo.getAttribute("aSize").needsUpdate=true;
+    starGeo.getAttribute("aColor").needsUpdate=true;
+  });
+}
+
+// ── Zoom controls ─────────────────────────────────────────────────────────────
+function smoothZoom(factor) {
+  const dir  = camera.position.clone().sub(controls.target);
+  const dist = dir.length();
+  const next = Math.max(controls.minDistance, Math.min(controls.maxDistance, dist * factor));
+  const dest = controls.target.clone().add(dir.normalize().multiplyScalar(next));
+  controls.autoRotate = false;
+  new TWEEN.Tween(camera.position)
+    .to({ x: dest.x, y: dest.y, z: dest.z }, 320)
+    .easing(TWEEN.Easing.Quadratic.Out)
+    .start();
+}
+document.getElementById("btn-zoom-in") .addEventListener("click", () => smoothZoom(0.65));
+document.getElementById("btn-zoom-out").addEventListener("click", () => smoothZoom(1.55));
+
+// Long-press continuous zoom
+let _zoomInterval = null;
+function startContinuousZoom(factor) {
+  smoothZoom(factor);
+  _zoomInterval = setInterval(() => smoothZoom(factor), 350);
+}
+function stopContinuousZoom() {
+  clearInterval(_zoomInterval); _zoomInterval = null;
+}
+["btn-zoom-in","btn-zoom-out"].forEach(id => {
+  const btn = document.getElementById(id);
+  const factor = id === "btn-zoom-in" ? 0.65 : 1.55;
+  btn.addEventListener("mousedown",  () => startContinuousZoom(factor));
+  btn.addEventListener("touchstart", () => startContinuousZoom(factor), { passive: true });
+  ["mouseup","mouseleave","touchend","touchcancel"].forEach(ev =>
+    btn.addEventListener(ev, stopContinuousZoom)
+  );
+});
+
+// ── Resize ────────────────────────────────────────────────────────────────────
+window.addEventListener("resize", ()=>{
+  const w=window.innerWidth, h=window.innerHeight;
+  camera.aspect=w/h; camera.updateProjectionMatrix();
+  renderer.setSize(w,h); composer.setSize(w,h);
+  labelRenderer.setSize(w,h); bloomPass.resolution.set(w,h);
+});
+
+// ── Camera fly-in intro ───────────────────────────────────────────────────────
+camera.position.set(0, 60, 1400);
+controls.autoRotate = false;
+new TWEEN.Tween(camera.position)
+  .to({x:0, y:0, z:380}, 2200)
+  .easing(TWEEN.Easing.Cubic.InOut)
+  .start();
+setTimeout(()=>{ controls.autoRotate=true; }, 2500);
+
+// ── Node count badge ──────────────────────────────────────────────────────────
+const _nbCount=document.getElementById("nb-count");
+if(_nbCount) _nbCount.textContent=N_nodes+" nodes · "+FULL_EDGES.length+" edges";
+
+// ── Animation loop ────────────────────────────────────────────────────────────
+let clock=0;
+(function animate(){
+  requestAnimationFrame(animate);
+  clock+=0.01;
+
+  // Node spawn stagger
+  const _elapsed=performance.now()-_spawnStart;
+  if(_elapsed < _SPAWN_MS){
+    const t=_elapsed/_SPAWN_MS;
+    const ease=t*t*(3-2*t); // smoothstep
+    for(let i=0;i<N_nodes;i++){
+      const delay=(i/N_nodes)*0.4;
+      sizeArr[i]=_targetSizes[i]*Math.max(0,Math.min(1,(ease-delay)/(1-delay)));
+    }
+    starGeo.getAttribute("aSize").needsUpdate=true;
+  }
+
+  starMat.uniforms.uTime.value=clock;
+  nebMat.uniforms.uTime.value=clock;
+  TWEEN.update();
+  flowParts.forEach((fp,i)=>{
+    fp.t=(fp.t+fp.speed)%1;
+    const pt=fp.curve.getPoint(fp.t);
+    fPosArr[i*3]=pt.x; fPosArr[i*3+1]=pt.y; fPosArr[i*3+2]=pt.z;
+  });
+  fGeo.getAttribute("position").needsUpdate=true;
+  controls.update();
+  composer.render();
+  labelRenderer.render(scene,camera);
+})();
+</script>
+
+
+<script>
+(function(){
+  function switchView(v){
+    var nv=document.getElementById('nebula-view');
+    var dv=document.getElementById('dash-view');
+    var nc=document.getElementById('nebula-controls');
+    var zc=document.getElementById('zoom-controls');
+    var lg=document.getElementById('nebula-legend');
+    var ip=document.getElementById('info-panel');
+    var pt=document.getElementById('project-title');
+    if(v==='nebula'){
+      nv.style.display='block';dv.style.display='none';
+      nc.style.display='flex';if(zc)zc.style.display='flex';
+      pt.style.display='block';
+      document.body.style.overflow='hidden';
+    } else {
+      nv.style.display='none';dv.style.display='block';
+      nc.style.display='none';if(zc)zc.style.display='none';
+      if(lg) lg.style.display='none';
+      if(ip) ip.style.display='none';
+      pt.style.display='none';
+      document.body.style.overflow='auto';
+      document.body.style.background='#f0f4f8';
+    }
+  }
+  var bd=document.getElementById('btn-to-dash');
+  var bn=document.getElementById('btn-to-nebula');
+  if(bd) bd.addEventListener('click',function(){switchView('dash');});
+  if(bn) bn.addEventListener('click',function(){switchView('nebula');});
+})();
 </script>
 </body>
 </html>

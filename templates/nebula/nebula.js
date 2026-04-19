@@ -35,7 +35,7 @@ const composer   = new THREE.EffectComposer(renderer);
 composer.addPass(new THREE.RenderPass(scene, camera));
 const bloomPass  = new THREE.UnrealBloomPass(
   new THREE.Vector2(canvas.clientWidth, canvas.clientHeight),
-  0.9, 0.5, 0.55
+  1.2, 0.6, 0.45
 );
 composer.addPass(bloomPass);
 
@@ -182,6 +182,12 @@ nodes.forEach((n, i) => {
   seedArr[i] = n.seed;
 });
 
+// ── Spawn stagger: animate node sizes from 0 → final over 1.6s ───────────────
+const _targetSizes = new Float32Array(sizeArr);  // snapshot final sizes
+sizeArr.fill(0);                                  // start invisible
+const _spawnStart = performance.now();
+const _SPAWN_MS   = 1600;
+
 const starVS = `
   attribute float aSize; attribute vec3 aColor; attribute float aSeed;
   uniform float uTime; varying vec3 vColor; varying float vGlow;
@@ -286,7 +292,7 @@ nodes.forEach(n => {
 // ── Info panel (safe DOM — no innerHTML with untrusted data) ──────────────────
 const infoPan = document.getElementById("info-panel");
 const infoCls = document.getElementById("info-close");
-infoCls.addEventListener("click", ()=>{ infoPan.style.display="none"; });
+infoCls.addEventListener("click", ()=>{ infoPan.classList.remove("open"); resetHighlight(); });
 
 function makeRow(label, value) {
   const row=document.createElement("div"); row.className="ni-row";
@@ -333,7 +339,34 @@ function showInfo(idx) {
     content.appendChild(d);
   });
 
-  infoPan.style.display="block";
+  infoPan.classList.add("open");
+
+  // Highlight clicked node and its direct neighbors; dim the rest
+  const neighborKeys=new Set([n.k]);
+  FULL_EDGES.forEach(([s,dst])=>{
+    if(s===n.k) neighborKeys.add(dst);
+    if(dst===n.k) neighborKeys.add(s);
+  });
+  nodes.forEach((nd,i)=>{
+    const match=neighborKeys.has(nd.k);
+    const base=2.5+(nd.fd.priority||0)*0.08;
+    sizeArr[i]=match ? base*(nd.k===n.k ? 1.7 : 1.0) : 0.4;
+    const dim=match ? 1.0 : 0.1;
+    const c=domCol(nd.fd.domain);
+    colArr[i*3]=c.r*dim; colArr[i*3+1]=c.g*dim; colArr[i*3+2]=c.b*dim;
+  });
+  starGeo.getAttribute("aSize").needsUpdate=true;
+  starGeo.getAttribute("aColor").needsUpdate=true;
+}
+
+function resetHighlight(){
+  nodes.forEach((nd,i)=>{
+    sizeArr[i]=2.5+(nd.fd.priority||0)*0.08;
+    const c=domCol(nd.fd.domain);
+    colArr[i*3]=c.r; colArr[i*3+1]=c.g; colArr[i*3+2]=c.b;
+  });
+  starGeo.getAttribute("aSize").needsUpdate=true;
+  starGeo.getAttribute("aColor").needsUpdate=true;
 }
 
 // ── Raycaster + click / tap ───────────────────────────────────────────────────
@@ -348,7 +381,7 @@ function handlePick(clientX, clientY) {
   ray.setFromCamera(mouse,camera);
   const hits=ray.intersectObject(stars);
   if(hits.length){ showInfo(hits[0].index); flyToNode(hits[0].index); }
-  else { infoPan.style.display="none"; }
+  else { infoPan.classList.remove("open"); resetHighlight(); }
 }
 
 // Mouse click (desktop)
@@ -408,6 +441,45 @@ document.getElementById("btn-legend").addEventListener("click", ()=>{
   el.style.display=el.style.display==="none"?"flex":"none";
 });
 
+// ── Domain filter (clickable legend pills) ────────────────────────────────────
+let activeDomain=null;
+document.querySelectorAll(".legend-item[data-domain]").forEach(el=>{
+  el.style.cursor="pointer";
+  el.addEventListener("click",()=>{
+    const d=el.dataset.domain;
+    activeDomain=activeDomain===d?null:d;
+    document.querySelectorAll(".legend-item[data-domain]").forEach(li=>{
+      li.style.opacity=(!activeDomain||li.dataset.domain===activeDomain)?"1":"0.3";
+    });
+    nodes.forEach((n,i)=>{
+      const match=!activeDomain||n.fd.domain===activeDomain;
+      sizeArr[i]=match?(2.5+(n.fd.priority||0)*0.08):0.3;
+      const dim=match?1.0:0.12;
+      const c=domCol(n.fd.domain);
+      colArr[i*3]=c.r*dim; colArr[i*3+1]=c.g*dim; colArr[i*3+2]=c.b*dim;
+    });
+    starGeo.getAttribute("aSize").needsUpdate=true;
+    starGeo.getAttribute("aColor").needsUpdate=true;
+  });
+});
+
+// ── Search bar ────────────────────────────────────────────────────────────────
+const _searchEl=document.getElementById("nebula-search");
+if(_searchEl){
+  _searchEl.addEventListener("input",function(){
+    const q=this.value.toLowerCase().trim();
+    nodes.forEach((n,i)=>{
+      const match=!q||n.k.toLowerCase().includes(q);
+      sizeArr[i]=match?(2.5+(n.fd.priority||0)*0.08):0.3;
+      const dim=(!q||match)?1.0:0.15;
+      const c=domCol(n.fd.domain);
+      colArr[i*3]=c.r*dim; colArr[i*3+1]=c.g*dim; colArr[i*3+2]=c.b*dim;
+    });
+    starGeo.getAttribute("aSize").needsUpdate=true;
+    starGeo.getAttribute("aColor").needsUpdate=true;
+  });
+}
+
 // ── Zoom controls ─────────────────────────────────────────────────────────────
 function smoothZoom(factor) {
   const dir  = camera.position.clone().sub(controls.target);
@@ -450,11 +522,37 @@ window.addEventListener("resize", ()=>{
   labelRenderer.setSize(w,h); bloomPass.resolution.set(w,h);
 });
 
+// ── Camera fly-in intro ───────────────────────────────────────────────────────
+camera.position.set(0, 60, 1400);
+controls.autoRotate = false;
+new TWEEN.Tween(camera.position)
+  .to({x:0, y:0, z:380}, 2200)
+  .easing(TWEEN.Easing.Cubic.InOut)
+  .start();
+setTimeout(()=>{ controls.autoRotate=true; }, 2500);
+
+// ── Node count badge ──────────────────────────────────────────────────────────
+const _nbCount=document.getElementById("nb-count");
+if(_nbCount) _nbCount.textContent=N_nodes+" nodes · "+FULL_EDGES.length+" edges";
+
 // ── Animation loop ────────────────────────────────────────────────────────────
 let clock=0;
 (function animate(){
   requestAnimationFrame(animate);
   clock+=0.01;
+
+  // Node spawn stagger
+  const _elapsed=performance.now()-_spawnStart;
+  if(_elapsed < _SPAWN_MS){
+    const t=_elapsed/_SPAWN_MS;
+    const ease=t*t*(3-2*t); // smoothstep
+    for(let i=0;i<N_nodes;i++){
+      const delay=(i/N_nodes)*0.4;
+      sizeArr[i]=_targetSizes[i]*Math.max(0,Math.min(1,(ease-delay)/(1-delay)));
+    }
+    starGeo.getAttribute("aSize").needsUpdate=true;
+  }
+
   starMat.uniforms.uTime.value=clock;
   nebMat.uniforms.uTime.value=clock;
   TWEEN.update();

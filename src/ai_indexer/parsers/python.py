@@ -111,6 +111,33 @@ class PythonParser(BaseParser):
         result.functions = list(dict.fromkeys(result.functions))[:20]
         result.classes   = list(dict.fromkeys(result.classes))[:20]
 
+        # Second pass: collect intra-file call targets per top-level function / method
+        for top in ast.iter_child_nodes(tree):
+            if isinstance(top, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                result.calls[top.name] = self._collect_calls(top)
+            elif isinstance(top, ast.ClassDef):
+                for item in ast.iter_child_nodes(top):
+                    if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                        result.calls[item.name] = self._collect_calls(item)
+
+    @staticmethod
+    def _collect_calls(
+        fn: "ast.FunctionDef | ast.AsyncFunctionDef",
+    ) -> list[str]:
+        """Return deduplicated call targets (max 8) within *fn*'s body."""
+        seen: list[str] = []
+        for child in ast.walk(fn):
+            if isinstance(child, ast.Call):
+                if isinstance(child.func, ast.Name):
+                    seen.append(child.func.id)
+                elif isinstance(child.func, ast.Attribute):
+                    base = child.func.value
+                    if isinstance(base, ast.Name) and base.id != "self":
+                        seen.append(f"{base.id}.{child.func.attr}")
+                    else:
+                        seen.append(child.func.attr)
+        return list(dict.fromkeys(seen))[:8]
+
     def chunk(self, src: str, path: Path, max_tokens: int = 800) -> list[str]:
         from ai_indexer.utils.io import count_tokens
         try:

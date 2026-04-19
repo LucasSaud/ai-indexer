@@ -1,9 +1,321 @@
-version: "0.0.2"
-project: ai_indexer
-generated_at: "2026-04-14T22:37:03.936723+00:00"
+version: "0.0.7"
+project: "ai-indexer"
+generated_at: "2026-04-17T06:16:17.782618+00:00"
 stats:
-  total_files: 0
-  critical_files: 0
-  entrypoints: 0
-  domains: 0
-files: {}
+  total_files: 32
+  critical_files: 8
+  entrypoints: 3
+  domains: 3
+@narrative:
+  project: "ai-indexer, 32 files, 3 domains"
+  hotspot1: "src/ai_indexer/main.py — entrypoint – CLI entrypoint for AI Context Indexer."
+  hotspot2: "src/ai_indexer/mcp/server.py — entrypoint – MCP (Model Context Protocol) server — JSON-RPC 2.0 over stdio."
+  hotspot3: "src/ai_indexer/core/engine.py — core – Analysis engine — orchestrates parsing, graph building, metric enrichment"
+  cycles: "0"
+  orphans: "1"
+  security: clean
+  entrypoints: "src/ai_indexer/gui/app.py, src/ai_indexer/main.py, src/ai_indexer/mcp/server.py"
+files:
+  @columns: f ft_v ft_c d_v d_c sd l c ep cl cs ps fi fo pr re br
+  @rows:
+    "src/ai_indexer/audio_tours/mixer.py" module 0.55 ai 0.581818 media u s false l 61 28 1 0 0.02209 116.28 2
+    "src/ai_indexer/audio_tours/narrator.py" module 0.55 ai 0.628571 media u s false l 105 28 1 0 0.02209 200.154 2
+    "src/ai_indexer/audio_tours/script_builder.py" builder 0.75 ai 0.581818 media u s false l 109 28 1 0 0.02209 207.779 2
+    "src/ai_indexer/core/cache.py" core 0.9 ai 0.6 cache i c false m 207 60 1 0 0.02552 379.671 4
+    "src/ai_indexer/core/engine.py" core 0.9 auth 0.535241 billing u c false e 1599 72 3 8 0.04796 1214.19 4
+    "src/ai_indexer/core/models.py" core 0.9 ai 0.59 auth u c false m 278 60 3 0 0.04829 210.622 6
+    "src/ai_indexer/exporters/base.py" module 0.55 ai 0.59 leads u s false l 56 32 7 0 0.1337 14.0849 11
+    "src/ai_indexer/exporters/dsl.py" module 0.55 ai 0.603846 auth u s false m 266 34 2 1 0.03547 296.053 4
+    "src/ai_indexer/exporters/html.py" module 0.55 ai 0.533333 auth u s false m 483 34 1 1 0.02209 920.707 2
+    "src/ai_indexer/exporters/toon.py" module 0.55 ai 0.596429 database u s false m 375 34 1 1 0.02209 714.835 2
+    "src/ai_indexer/exporters/xml_exporter.py" port 0.75 ai 0.660714 logging u s false m 238 34 1 1 0.02209 453.682 2
+    "src/ai_indexer/gui/app.py" entrypoint 0.75 ai 0.65 auth u c true l 119 68 0 1 0.02042 463.036 0
+    "src/ai_indexer/gui/components/files_table.py" component 0.9 ai 0.6 auth p s false m 292 36 1 0 0.02501 538.508 2
+    "src/ai_indexer/gui/components/hotspots_panel.py" component 0.9 ai 0.564286 auth p s false l 149 32 1 0 0.02501 274.787 2
+    "src/ai_indexer/gui/components/log_console.py" component 0.9 ai 0.628571 logging p s false l 138 32 1 0 0.02501 254.5 2
+    "src/ai_indexer/gui/components/output_panel.py" component 0.9 ai 0.55625 auth p s false m 202 36 1 0 0.02501 372.53 2
+    "src/ai_indexer/gui/components/project_panel.py" component 0.9 ai 0.5375 users p s false m 443 36 1 0 0.02501 816.983 2
+    "src/ai_indexer/gui/components/warnings_panel.py" component 0.9 ai 0.564286 orders p s false l 184 32 1 0 0.02501 339.334 2
+    "src/ai_indexer/gui/engine_worker.py" worker 0.75 ai 0.55625 workers a s false m 326 38 1 3 0.02501 601.211 2
+    "src/ai_indexer/gui/main_window.py" entrypoint 0.75 ai 0.584375 orders u c false h 718 66 1 7 0.03778 1176.04 1
+    "src/ai_indexer/main.py" entrypoint 0.75 ai 0.583333 storage u c true h 869 80 1 14 0.02751 1561.24 2
+    "src/ai_indexer/mcp/http_server.py" entrypoint 0.75 ai 0.6 logging u c false m 250 58 1 2 0.02209 476.557 2
+    "src/ai_indexer/mcp/server.py" entrypoint 0.75 ai 0.596429 logging u c true m 438 74 2 2 0.03148 504.909 3
+    "src/ai_indexer/parsers/base.py" module 0.55 ai 0.6125 leads u s false m 266 33 0 1 0.02042 1035.02 0
+    "src/ai_indexer/parsers/python.py" module 0.55 ai 0.55 email u s false m 259 34 1 2 0.02552 475.047 4
+    "src/ai_indexer/parsers/typescript.py" types 0.75 ai 0.635 leads u c false m 448 38 1 2 0.02552 821.702 4
+    "src/ai_indexer/tours/generator.py" module 0.55 ai 0.6 auth u s false m 217 34 1 1 0.02209 413.651 2
+    "src/ai_indexer/utils/config.py" util 0.9 ai 0.569231 config u s false m 424 34 3 0 0.03428 357.57 5
+    "src/ai_indexer/utils/git_context.py" util 0.9 ai 0.575 util u s false l 171 28 1 0 0.02209 325.965 2
+    "src/ai_indexer/utils/io.py" util 0.9 ai 0.628571 util u s false m 478 35 4 0 0.06457 261.943 7
+    "src/ai_indexer/utils/security.py" util 0.9 database 0.59 ai u s false l 144 28 1 0 0.02552 264.119 4
+    "src/ai_indexer/utils/ui.py" util 0.9 ai 0.581818 logging u s false m 356 34 1 0 0.02209 678.617 2
+  @detail:
+  "src/ai_indexer/audio_tours/mixer.py":
+    hint: "module for ai domain in audio_tours/"
+    functions: finalize_audio
+  "src/ai_indexer/audio_tours/narrator.py":
+    hint: "module for ai domain in audio_tours/"
+    functions: __init__ list_voices synthesize
+    classes: LocalNarrator
+  "src/ai_indexer/audio_tours/script_builder.py":
+    hint: "builder for ai domain in audio_tours/"
+    functions: __init__ _clean_text build_full_script
+    classes: ScriptBuilder
+  "src/ai_indexer/core/cache.py":
+    hint: "Incremental analysis cache."
+    functions: __init__ _load save _key get
+    classes: AnalysisCache
+  "src/ai_indexer/core/engine.py":
+    hint: "Analysis engine — orchestrates parsing, graph building, metric enrichment,"
+    functions: __init__ _register_default_parsers run _update_files_and_cache _post_process
+    classes: FileMetaDict AnalysisEngine
+  "src/ai_indexer/core/models.py":
+    hint: "Core data models for the AI Context Indexer."
+    functions: compute_refactor_effort compute_blast_radius_2hop to_dict
+    classes: ConfidenceValue FileMetadata
+  "src/ai_indexer/exporters/base.py":
+    hint: "Abstract base exporter."
+    functions: export
+    classes: BaseExporter
+  "src/ai_indexer/exporters/dsl.py":
+    hint: "DSL (Domain-Specific Language) exporter."
+    functions: export render_file _render _norm _render_block
+    classes: DslExporter
+  "src/ai_indexer/exporters/html.py":
+    hint: "HTML dashboard exporter."
+    functions: export _build_context _render _render_inline stat_card
+    classes: HtmlExporter
+  "src/ai_indexer/exporters/toon.py":
+    hint: "TOON format exporter."
+    functions: export _render _render_narrative _render_files_columnar _extract_row
+    classes: ToonExporter
+  "src/ai_indexer/exporters/xml_exporter.py":
+    hint: "XML output exporter."
+    functions: _sub export
+    classes: XmlExporter
+  "src/ai_indexer/gui/app.py":
+    hint: "QApplication entry point — palette, Fusion theme, and main() for the GUI."
+    functions: build_dark_palette main
+  "src/ai_indexer/gui/components/files_table.py":
+    hint: "Files table — sortable QTableWidget showing FileMetadata for every file."
+    functions: __init__ _build_ui populate clear _extract_values
+    classes: FilesTable
+  "src/ai_indexer/gui/components/hotspots_panel.py":
+    hint: "Hotspots panel — top-N files by priority score."
+    functions: __init__ _build_ui populate clear
+    classes: HotspotsPanel
+  "src/ai_indexer/gui/components/log_console.py":
+    hint: "Log console — streaming read-only QPlainTextEdit for engine output."
+    functions: __init__ _build_ui append_line clear
+    classes: LogConsole
+  "src/ai_indexer/gui/components/output_panel.py":
+    hint: "Output panel — lists written output files with open/reveal actions."
+    functions: __init__ _build_ui add_file clear _show_context_menu
+    classes: OutputPanel
+  "src/ai_indexer/gui/components/project_panel.py":
+    hint: "Project panel — path selector, format checkboxes, and Run button."
+    functions: __init__ _build_ui set_project_path get_project_path set_running
+    classes: ProjectPanel
+  "src/ai_indexer/gui/components/warnings_panel.py":
+    hint: "Warnings panel — architectural and security warnings tree."
+    functions: __init__ _build_ui populate clear
+    classes: WarningsPanel
+  "src/ai_indexer/gui/engine_worker.py":
+    hint: "Background worker that runs AnalysisEngine on a QThread."
+    functions: __init__ emit cancel run _run_analysis
+    classes: _QtLogHandler EngineWorker
+  "src/ai_indexer/gui/main_window.py":
+    hint: "Main application window — layout, menu bar, and worker lifecycle."
+    functions: __init__ _build_ui _build_menu _build_status_bar start_analysis
+    classes: MainWindow
+  "src/ai_indexer/main.py":
+    hint: "CLI entrypoint for AI Context Indexer."
+    functions: _build_parser _build_output _detect_modules _write_outputs _write_md
+    classes: _Formatter
+  "src/ai_indexer/mcp/http_server.py":
+    hint: "Minimal stdlib HTTP server that exposes MCP query methods as REST endpoints."
+    functions: log_message do_GET _send __init__ serve
+    classes: _Handler HttpMcpServer
+  "src/ai_indexer/mcp/server.py":
+    hint: "MCP (Model Context Protocol) server — JSON-RPC 2.0 over stdio."
+    functions: __init__ get_dependents search_symbol get_file_summary list_hotspots
+    classes: MCPServer
+  "src/ai_indexer/parsers/base.py":
+    hint: "Abstract base class for language parsers."
+    warn: "📭 Orphan file — no file imports it and it's not an entrypoint"
+    functions: parse can_handle chunk __init__ register
+    classes: ParseResult BaseParser ParserRegistry
+  "src/ai_indexer/parsers/python.py":
+    hint: "Python language parser (AST-primary, regex fallback)."
+    functions: parse _walk_ast _collect_calls chunk
+    classes: PythonParser
+  "src/ai_indexer/parsers/typescript.py":
+    hint: "TypeScript / JavaScript language parser."
+    functions: _make_parser parse _parse_tree_sitter _walk_tree _extract_jsdoc
+    classes: TypeScriptParser
+  "src/ai_indexer/tours/generator.py":
+    hint: "Tour generator – builds a structured narration tour from AnalysisEngine output."
+    functions: __init__ generate_overview_tour
+    classes: TourStep ProjectTour TourGenerator
+  "src/ai_indexer/utils/config.py":
+    hint: "YAML configuration loader for .indexer.yaml project overrides."
+    functions: load_config __init__ exclude_dirs exclude_patterns extra_text_filenames
+    classes: IndexerConfig
+  "src/ai_indexer/utils/git_context.py":
+    hint: "Git context helpers: recent logs, diffs, and change-frequency data."
+    functions: _run is_git_repo get_recent_logs get_staged_diff get_file_change_counts
+  "src/ai_indexer/utils/io.py":
+    hint: "I/O utilities: safe file reading (mmap for large files), token counting,"
+    functions: count_tokens safe_read_text build_import_resolution_state __init__ resolve_import
+    classes: ImportResolver GitignoreFilter
+  "src/ai_indexer/utils/security.py":
+    hint: "Secret / credential scanner."
+    functions: scan_secrets
+    classes: _Pattern
+  "src/ai_indexer/utils/ui.py":
+    hint: "Terminal UI for ai-indexer."
+    functions: _file_size __init__ active header on_progress
+    classes: AnalysisUI
+hotspots:
+  -
+    file: "src/ai_indexer/main.py"
+    priority_score: 80
+    pagerank: 0.0275103
+    fan_in: 1
+    refactor_effort: 1561.24
+    blast_radius: 2
+  -
+    file: "src/ai_indexer/mcp/server.py"
+    priority_score: 74
+    pagerank: 0.0314838
+    fan_in: 2
+    refactor_effort: 504.909
+    blast_radius: 3
+  -
+    file: "src/ai_indexer/core/engine.py"
+    priority_score: 72
+    pagerank: 0.0479604
+    fan_in: 3
+    refactor_effort: 1214.19
+    blast_radius: 4
+  -
+    file: "src/ai_indexer/gui/app.py"
+    priority_score: 68
+    pagerank: 0.0204236
+    fan_in: 0
+    refactor_effort: 463.036
+    blast_radius: 0
+  -
+    file: "src/ai_indexer/gui/main_window.py"
+    priority_score: 66
+    pagerank: 0.0377838
+    fan_in: 1
+    refactor_effort: 1176.04
+    blast_radius: 1
+  -
+    file: "src/ai_indexer/core/cache.py"
+    priority_score: 60
+    pagerank: 0.0255194
+    fan_in: 1
+    refactor_effort: 379.671
+    blast_radius: 4
+  -
+    file: "src/ai_indexer/core/models.py"
+    priority_score: 60
+    pagerank: 0.04829
+    fan_in: 3
+    refactor_effort: 210.622
+    blast_radius: 6
+  -
+    file: "src/ai_indexer/mcp/http_server.py"
+    priority_score: 58
+    pagerank: 0.0220939
+    fan_in: 1
+    refactor_effort: 476.557
+    blast_radius: 2
+  -
+    file: "src/ai_indexer/parsers/typescript.py"
+    priority_score: 38
+    pagerank: 0.0255194
+    fan_in: 1
+    refactor_effort: 821.702
+    blast_radius: 4
+  -
+    file: "src/ai_indexer/gui/engine_worker.py"
+    priority_score: 38
+    pagerank: 0.0250117
+    fan_in: 1
+    refactor_effort: 601.211
+    blast_radius: 2
+  -
+    file: "src/ai_indexer/gui/components/output_panel.py"
+    priority_score: 36
+    pagerank: 0.0250117
+    fan_in: 1
+    refactor_effort: 372.53
+    blast_radius: 2
+  -
+    file: "src/ai_indexer/gui/components/project_panel.py"
+    priority_score: 36
+    pagerank: 0.0250117
+    fan_in: 1
+    refactor_effort: 816.983
+    blast_radius: 2
+  -
+    file: "src/ai_indexer/gui/components/files_table.py"
+    priority_score: 36
+    pagerank: 0.0250117
+    fan_in: 1
+    refactor_effort: 538.508
+    blast_radius: 2
+  -
+    file: "src/ai_indexer/utils/io.py"
+    priority_score: 35
+    pagerank: 0.0645711
+    fan_in: 4
+    refactor_effort: 261.943
+    blast_radius: 7
+  -
+    file: "src/ai_indexer/tours/generator.py"
+    priority_score: 34
+    pagerank: 0.0220939
+    fan_in: 1
+    refactor_effort: 413.651
+    blast_radius: 2
+modules:
+  "src/ai":
+    - "src/ai_indexer/main.py"
+    - "src/ai_indexer/tours/generator.py"
+    - "src/ai_indexer/parsers/base.py"
+    - "src/ai_indexer/parsers/python.py"
+    - "src/ai_indexer/parsers/typescript.py"
+    - "src/ai_indexer/exporters/dsl.py"
+    - "src/ai_indexer/exporters/toon.py"
+    - "src/ai_indexer/exporters/xml_exporter.py"
+    - "src/ai_indexer/core/cache.py"
+    - "src/ai_indexer/core/models.py"
+    - "src/ai_indexer/exporters/html.py"
+    - "src/ai_indexer/exporters/base.py"
+    - "src/ai_indexer/utils/config.py"
+    - "src/ai_indexer/utils/git_context.py"
+    - "src/ai_indexer/utils/io.py"
+    - "src/ai_indexer/gui/main_window.py"
+    - "src/ai_indexer/utils/ui.py"
+    - "src/ai_indexer/mcp/server.py"
+    - "src/ai_indexer/gui/app.py"
+    - "src/ai_indexer/mcp/http_server.py"
+    - "src/ai_indexer/gui/engine_worker.py"
+    - "src/ai_indexer/audio_tours/narrator.py"
+    - "src/ai_indexer/gui/components/output_panel.py"
+    - "src/ai_indexer/audio_tours/mixer.py"
+    - "src/ai_indexer/audio_tours/script_builder.py"
+    - "src/ai_indexer/gui/components/project_panel.py"
+    - "src/ai_indexer/gui/components/warnings_panel.py"
+    - "src/ai_indexer/gui/components/hotspots_panel.py"
+    - "src/ai_indexer/gui/components/log_console.py"
+    - "src/ai_indexer/gui/components/files_table.py"
+  "src/auth":
+    - "src/ai_indexer/core/engine.py"
+  "src/database":
+    - "src/ai_indexer/utils/security.py"

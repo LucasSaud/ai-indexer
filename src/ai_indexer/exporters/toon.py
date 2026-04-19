@@ -53,6 +53,9 @@ class ToonExporter(BaseExporter):
         for k, v in (data.get("stats") or {}).items():
             parts.append(f"  {k}: {self._scalar(v)}")
 
+        # Narrative summary for LLM orientation
+        parts.append(self._render_narrative(data))
+
         # Columnar files section
         parts.append(self._render_files_columnar(data.get("files") or {}))
 
@@ -64,6 +67,55 @@ class ToonExporter(BaseExporter):
                 parts.append(self._serialize(val, indent=1))
 
         return "\n".join(parts) + "\n"
+
+    def _render_narrative(self, data: dict[str, Any]) -> str:
+        """Emit a human/LLM-readable @narrative block summarising the project."""
+        files   = data.get("files") or {}
+        stats   = data.get("stats") or {}
+        hs      = data.get("hotspots") or []
+        project = data.get("project", "")
+
+        n_files   = stats.get("total_files", len(files))
+        n_domains = stats.get("domains", 0)
+        n_cycles  = sum(1 for fd in files.values() if fd.get("cyc", False))
+        n_orphans = sum(
+            1 for fd in files.values()
+            if fd.get("fi", 0) == 0
+            and not fd.get("ep", False)
+            and (fd.get("ft") or {}).get("value") not in {"docs", "config", "asset", "template"}
+        )
+        n_security = sum(
+            1 for fd in files.values()
+            for w in (fd.get("warns") or [])
+            if any(t in w.lower() for t in ("secret", "credential", "hardcoded", "api key"))
+        )
+        eps = [
+            fd.get("f", "") for fd in files.values()
+            if fd.get("ep", False)
+        ][:3]
+
+        lines = ["@narrative:"]
+        lines.append(
+            f"  project: {self._scalar(f'{project}, {n_files} files, {n_domains} domains')}"
+        )
+
+        # Top-3 hotspots with role hints (first line only, max 80 chars)
+        for i, h in enumerate(hs[:3], 1):
+            fpath = h.get("file", "")
+            fd    = files.get(fpath) or {}
+            raw   = (fd.get("rh") or "").strip()
+            hint  = (raw.splitlines()[0] if raw else f"priority {h.get('priority_score', 0)}")[:80]
+            lines.append(f"  hotspot{i}: {self._scalar(f'{fpath} — {hint}')}")
+
+        lines.append(f"  cycles: {self._scalar(str(n_cycles))}")
+        lines.append(f"  orphans: {self._scalar(str(n_orphans))}")
+        lines.append(
+            f"  security: {self._scalar(f'{n_security} warning(s)' if n_security else 'clean')}"
+        )
+        if eps:
+            lines.append(f"  entrypoints: {self._scalar(', '.join(eps))}")
+
+        return "\n".join(lines)
 
     def _render_files_columnar(self, files: dict[str, Any]) -> str:
         if not files:

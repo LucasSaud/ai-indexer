@@ -114,17 +114,27 @@ body {
   position: fixed;
   left: 0; right: 0; bottom: 0;
   width: 100%;
-  background: var(--panel);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border);
+  background: rgba(15, 15, 20, 0.65);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
   border-radius: 18px 18px 0 0;
   padding: 8px 18px 36px;
   z-index: 30;
-  display: none;
   max-height: 62vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  /* Transition: slide up from bottom on mobile */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(18px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+#info-panel.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 /* drag handle */
 #info-panel::before {
@@ -271,6 +281,11 @@ tr:hover td { background: #f8fafc; }
     border-radius: 14px;
     padding: 16px;
     max-height: 75vh;
+    /* Desktop: slide in from right */
+    transform: translateX(12px);
+  }
+  #info-panel.open {
+    transform: translateX(0);
   }
   #info-panel::before { display: none; }
   #nebula-legend {

@@ -34,7 +34,7 @@ from ai_indexer.utils.io import (
 
 log = logging.getLogger("ai-indexer.engine")
 
-VERSION = "0.0.2"
+VERSION = "0.0.7"
 
 # Aumenta recursionlimit para grafos grandes
 sys.setrecursionlimit(10000)
@@ -95,6 +95,7 @@ _IGNORE_PATTERNS: tuple[str, ...] = (
     "*.pem", "*.crt", "*.key", "*.p12", "*.pfx",
     # Outros
     "*.log", "*.bak", "*.tmp", "*.swp", "*.swo",
+    "__init__.py",
 )
 _GENERATED_FILES: frozenset[str] = frozenset[str]({
     "estrutura_projeto.json", "estrutura_projeto.toon",
@@ -748,6 +749,7 @@ class AnalysisEngine:
             "complexity_label": cx_label,
             "complexity_score": cx_score,
             "capabilities": {"functions": pr.functions, "classes": pr.classes, "exports": pr.exports},
+            "func_calls": pr.calls,
             "dependencies": pr.external,
             "internal_dependencies": pr.internal,
             "warnings": warnings,
@@ -788,6 +790,7 @@ class AnalysisEngine:
             chunks=m.get("chunks", []),
             module_doc=m.get("module_doc"),
             hints=m.get("hints", {}),
+            func_calls=m.get("func_calls", {}),
         )
 
     # ── Graph ─────────────────────────────────────────────────────────────────

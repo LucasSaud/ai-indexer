@@ -131,6 +131,50 @@ class MCPServer:
             for fd in sorted(self._files.values(), key=lambda f: f.refactor_effort, reverse=True)[:n]
         ]
 
+    def get_dsl_chunk(self, file_path: str) -> str | None:
+        """Return the DSL block for a single file — zero overhead, ideal for chat context."""
+        fd = self._files.get(file_path)
+        if fd is None:
+            return None
+        from ai_indexer.exporters.dsl import DslExporter
+        return DslExporter().render_file(file_path, fd)
+
+    def get_subgraph(self, file_path: str, depth: int = 2) -> dict[str, Any]:
+        """Return the ego-graph of *file_path*: all nodes reachable within *depth*
+        hops in either direction, plus the edges between them.
+
+        Useful for asking "show me everything related to engine.py" without
+        loading the full index into the LLM context window.
+        """
+        from collections import deque
+
+        visited: set[str] = set()
+        queue: deque[tuple[str, int]] = deque([(file_path, 0)])
+        while queue:
+            node, d = queue.popleft()
+            if node in visited or d > depth:
+                continue
+            visited.add(node)
+            if d < depth:
+                for nb in self._graph.get(node, []):
+                    if nb not in visited:
+                        queue.append((nb, d + 1))
+                for nb in self._rev.get(node, []):
+                    if nb not in visited:
+                        queue.append((nb, d + 1))
+
+        nodes = [
+            self.get_file_summary(p) for p in visited
+            if self.get_file_summary(p) is not None
+        ]
+        edges = [
+            [src, dst]
+            for src in visited
+            for dst in self._graph.get(src, [])
+            if dst in visited
+        ]
+        return {"nodes": nodes, "edges": edges}
+
     # ── JSON-RPC 2.0 dispatch ─────────────────────────────────────────────────
 
     _METHODS: dict[str, str] = {
@@ -141,6 +185,8 @@ class MCPServer:
         "list_orphans":            "list_orphans",
         "list_by_blast_radius":    "list_by_blast_radius",
         "list_refactor_candidates":"list_refactor_candidates",
+        "get_subgraph":            "get_subgraph",
+        "get_dsl_chunk":           "get_dsl_chunk",
     }
 
     def _dispatch(self, req: dict[str, Any]) -> dict[str, Any]:
@@ -164,6 +210,10 @@ class MCPServer:
                 result = handler(params.get("file_path", ""))
             elif method in {"list_hotspots", "list_by_blast_radius", "list_refactor_candidates"}:
                 result = handler(int(params.get("n", 10)))
+            elif method == "get_subgraph":
+                result = handler(params.get("file_path", ""), int(params.get("depth", 2)))
+            elif method == "get_dsl_chunk":
+                result = handler(params.get("file_path", ""))
             else:
                 result = handler()
             return {"jsonrpc": "2.0", "id": req_id, "result": result}

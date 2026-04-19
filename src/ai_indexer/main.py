@@ -14,6 +14,7 @@ from typing import Any
 
 from ai_indexer import __version__
 from ai_indexer.core.engine import AnalysisEngine
+from ai_indexer.exporters.dsl import DslExporter
 from ai_indexer.exporters.html import HtmlExporter
 from ai_indexer.exporters.toon import ToonExporter
 from ai_indexer.exporters.xml_exporter import XmlExporter
@@ -52,6 +53,8 @@ OUTPUT FILES  (written to project root unless --output or output_dir is set)
   estrutura_projeto.json   Full analysis as compact JSON (all metadata)
   estrutura_projeto.toon   Compact TOON format — ~50% fewer tokens than JSON,
                            ideal for pasting directly into an LLM context window
+  estrutura_projeto.dsl    Function-level DSL with intra-file call graph —
+                           best format for code-chat and get_dsl_chunk MCP calls
   estrutura_projeto.html   Interactive 3-D nebula dashboard (opens in browser)
   estrutura_projeto.md     Markdown summary with hotspot table and warnings
   estrutura_projeto.xml    XML format recommended by Anthropic for Claude;
@@ -143,6 +146,8 @@ MCP TOOLS  (available when running with --mcp)
   list_orphans           Files with no importers and not an entrypoint
   list_by_blast_radius   Files sorted by 2-hop blast radius (change impact)
   list_refactor_candidates  Files with high refactor effort score
+  get_subgraph           Ego-graph of a file: N-hop neighbors + edges
+  get_dsl_chunk          DSL block for one file — function names + call graph (new v0.0.7)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
@@ -179,12 +184,13 @@ def _build_parser() -> argparse.ArgumentParser:
     out_group = p.add_argument_group("Output")
     out_group.add_argument(
         "--format", "-f",
-        choices=["toon", "json", "md", "html", "xml", "all"],
+        choices=["toon", "json", "md", "html", "xml", "dsl", "all"],
         default="all",
         metavar="FORMAT",
         help=(
             "Output format to generate. Choices:\n"
             "  toon  — compact TOON (most token-efficient for LLMs)\n"
+            "  dsl   — function-level DSL with call graph (best for code chat)\n"
             "  json  — full JSON with all metadata\n"
             "  md    — Markdown summary with hotspot table\n"
             "  html  — interactive 3-D nebula dashboard\n"
@@ -250,8 +256,34 @@ def _build_parser() -> argparse.ArgumentParser:
             "Exposes tools for IDE plugins and AI agents:\n"
             "  get_file_summary, get_dependents, search_symbol,\n"
             "  list_hotspots, list_orphans, list_by_blast_radius,\n"
-            "  list_refactor_candidates.\n"
+            "  list_refactor_candidates, get_subgraph.\n"
             "The server runs until stdin is closed (Ctrl-D / EOF)."
+        ),
+    )
+    integration_group.add_argument(
+        "--git-url",
+        default=None, metavar="URL",
+        help=(
+            "Clone and index a remote git repository.\n"
+            "Uses git clone --depth=1 --filter=blob:none (shallow treeless clone).\n"
+            "The temporary clone is deleted after analysis completes.\n"
+            "Example: ai-indexer --git-url https://github.com/pallets/flask --format toon\n"
+            "Requires git on PATH."
+        ),
+    )
+    integration_group.add_argument(
+        "--serve",
+        nargs="?",
+        const=8765,
+        type=int,
+        default=None,
+        metavar="PORT",
+        help=(
+            "After indexing, start a REST HTTP server on PORT (default: 8765).\n"
+            "Exposes MCP query methods as GET endpoints:\n"
+            "  /hotspots  /file  /subgraph  /search\n"
+            "  /blast_radius  /refactor_candidates  /orphans\n"
+            "The server runs until interrupted (Ctrl-C)."
         ),
     )
 
@@ -393,6 +425,11 @@ def _write_outputs(
         XmlExporter().export(output_data, path)
         written.append(("xml", path))
 
+    if fmt in ("dsl", "all"):
+        path = override_path or (out_dir / "estrutura_projeto.dsl")
+        DslExporter().export(output_data, path)
+        written.append(("dsl", path))
+
     return written
 
 
@@ -449,7 +486,36 @@ def main() -> None:
     else:
         logging.getLogger().setLevel(logging.WARNING)
 
-    root = Path(args.project_dir).resolve() if args.project_dir else Path.cwd()
+    # ── Remote git clone ──────────────────────────────────────────────────────
+    _clone_tmp: Path | None = None
+    if args.git_url:
+        import atexit
+        import shutil
+        import subprocess
+        import tempfile
+        _clone_tmp = Path(tempfile.mkdtemp(prefix="ai-indexer-clone-"))
+        atexit.register(lambda p=_clone_tmp: shutil.rmtree(p, ignore_errors=True))
+        try:
+            proc = subprocess.run(
+                ["git", "clone", "--depth=1", "--filter=blob:none",
+                 args.git_url, str(_clone_tmp)],
+                capture_output=True, timeout=120,
+            )
+            if proc.returncode != 0:
+                ui.error(f"git clone failed: {proc.stderr.decode(errors='replace').strip()}")
+                sys.exit(1)
+        except FileNotFoundError:
+            ui.error("git not found on PATH — install git to use --git-url")
+            sys.exit(1)
+        except subprocess.TimeoutExpired:
+            ui.error("git clone timed out after 120s")
+            sys.exit(1)
+
+    if args.git_url:
+        root = _clone_tmp  # type: ignore[assignment]
+    else:
+        root = Path(args.project_dir).resolve() if args.project_dir else Path.cwd()
+
     if not root.is_dir():
         ui.error(f"Not a directory: {root}")
         sys.exit(1)
@@ -542,6 +608,10 @@ def main() -> None:
     if args.mcp:
         server = MCPServer(engine.files, engine.graph, dict(engine.rev))
         server.serve_stdio()
+
+    if args.serve is not None:
+        from ai_indexer.mcp.http_server import HttpMcpServer
+        HttpMcpServer(engine.files, engine.graph, dict(engine.rev), port=args.serve).serve()
 
 
 if __name__ == "__main__":

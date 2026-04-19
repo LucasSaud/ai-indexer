@@ -46,6 +46,10 @@
   <button class="nb-btn" id="btn-to-dash">Dashboard</button>
   <button class="nb-btn" id="btn-tour">Tour</button>
   <button class="nb-btn" id="btn-legend">Legend</button>
+  <input id="nebula-search" type="text" placeholder="search file…" autocomplete="off"
+    style="background:rgba(10,20,50,.75);border:1px solid #2d4a8a;border-radius:6px;
+    color:#adc8ff;font:13px monospace;padding:4px 10px;outline:none;width:160px;">
+  <span id="nb-count" style="color:#4a6a9a;font:11px monospace;padding:0 6px;white-space:nowrap;"></span>
 </div>
 
 {# ── Zoom controls ─────────────────────────────────────────────────────── #}
@@ -67,7 +71,7 @@
     ("billing","#f2c141"),("utils","#80e619"),("config","#e6990a"),
     ("cache","#66b3ff"),("security","#ff5050"),("shared","#e0e0e0")
   ] %}
-  <div class="leg-item">
+  <div class="leg-item legend-item" data-domain="{{ domain }}" style="cursor:pointer">
     <div class="leg-dot" style="background:{{ color }}"></div>
     <span>{{ domain }}</span>
   </div>

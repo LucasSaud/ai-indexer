@@ -28,6 +28,9 @@ class ParseResult:
     has_main_guard: bool = False
     has_listen: bool = False
 
+    calls: dict[str, list[str]] = field(default_factory=dict)
+    """function_name → list of called names (intra-file; Python only for now)."""
+
     docstrings: dict[str, str] = field(default_factory=dict)
     """symbol → first-line docstring/JSDoc."""
 
