@@ -9,6 +9,9 @@
 **[English version → README.en.md](README.en.md)**
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## O que é
 
@@ -28,6 +31,9 @@ O que o indexer produz para cada arquivo:
 - **Contexto git** — histórico de commits, diff stat, frequência de mudanças por arquivo
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Instalação
 
@@ -65,6 +71,9 @@ pip install -e ".[full,dev]"
 | Mixagem de música de fundo | `pydub` + `ffmpeg` instalado no sistema |
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Início Rápido
 
@@ -83,6 +92,9 @@ ai-indexer --format toon --output context.toon ~/projects/meu-app
 ```
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Uso
 
@@ -143,6 +155,9 @@ Se `PROJECT_DIR` não for informado, usa o diretório atual. Se o projeto tiver 
 | `--help, -h` | Exibe o help completo e sai |
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Formatos de Saída
 
@@ -215,6 +230,9 @@ ai-indexer --format xml .
 ```
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Arquivos Gerados
 
@@ -230,6 +248,9 @@ Todos escritos no diretório do projeto (ou no `output_dir` configurado):
 | `.aicontext_cache_v8.json` | Cache incremental por arquivo (não commitar) |
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Configuração
 
@@ -302,6 +323,9 @@ git:
 ```
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Métricas Explicadas
 
@@ -348,6 +372,9 @@ Alta fan-in = arquivo muito dependido = mudanças são arriscadas.
 Alta fan-out = arquivo muito acoplado = difícil de testar isoladamente.
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Detecção de Segredos
 
@@ -377,6 +404,9 @@ security:
 ```
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Injeção de Instrução
 
@@ -400,6 +430,9 @@ Foque em melhorias de performance no módulo de catálogo (src/catalog/).
 ```
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Contexto Git
 
@@ -422,6 +455,9 @@ Isso adiciona ao output:
 Útil para dar ao LLM contexto de "o que mudou recentemente" e "quais arquivos são mais voláteis".
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Servidor MCP
 
@@ -456,6 +492,9 @@ Cada resposta é uma linha JSON em stdout:
 ```
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Tour de Áudio
 
@@ -479,6 +518,9 @@ Output: `tour_<nome-do-projeto>.mp3` no diretório de saída.
 > Para música de fundo em MP3, `ffmpeg` deve estar instalado no sistema (`brew install ffmpeg` no macOS).
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Cache Incremental
 
@@ -495,6 +537,9 @@ Adicione ao `.gitignore`:
 ```
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Arquitetura
 
@@ -548,6 +593,9 @@ main.py
 ```
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Suporte a Linguagens
 
@@ -559,6 +607,9 @@ main.py
 | Outros | `.go`, `.rs`, `.java`, `.rb`, `.php`, `.cs`, `.cpp`, `.c`, `.h`, `.swift`, `.kt`, `.json`, `.yaml`, `.toml`, `.md`, e mais | Análise básica de texto |
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Requisitos
 
@@ -567,6 +618,9 @@ main.py
 - Dependências opcionais: veja tabela na seção [Instalação](#instalação)
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Versionamento
 
@@ -581,6 +635,9 @@ ai-indexer --version
 ```
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Contribuindo
 
@@ -601,7 +658,11 @@ mypy src/
 ```
 
 ---
+> Estado atual: o fluxo principal de análise está estável; MCP e tour de áudio continuam como integrações de produto que podem evoluir mais rápido que o núcleo.
+
+Documentação técnica complementar: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)
 
 ## Licença
 
 MIT © Lucas Marinho Saud
+

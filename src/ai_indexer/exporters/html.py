@@ -7,7 +7,6 @@ simple string substitution of known placeholders.
 
 from __future__ import annotations
 
-import importlib.resources
 import json
 import logging
 from datetime import datetime
@@ -15,6 +14,8 @@ from pathlib import Path
 from typing import Any
 
 from ai_indexer.exporters.base import BaseExporter
+from ai_indexer.core.output import normalize_file_payload
+from ai_indexer.version import __version__
 
 log = logging.getLogger("ai-indexer.html")
 
@@ -46,25 +47,27 @@ class HtmlExporter(BaseExporter):
         graph    = data.get("dependency_graph") or {}
         rev      = data.get("reverse_graph") or {}
         modules  = data.get("modules") or {}
-        hotspots = data.get("hotspots") or []
-        version  = data.get("version", "0.0.5")
+        version  = data.get("version", __version__)
         project  = data.get("project", "")
         ts       = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Lean file records for nebula.js
         all_files_lean: dict[str, Any] = {}
         for path, fd in files.items():
+            normalized = normalize_file_payload(fd, path)
             all_files_lean[path] = {
-                "file":            fd.get("f") or fd.get("file", path),
-                "domain":          (fd.get("d") or {}).get("value") or fd.get("domain", ""),
-                "priority":        fd.get("ps") or fd.get("priority_score", 0),
-                "fan_in":          fd.get("fi") or fd.get("fan_in", 0),
-                "criticality":     fd.get("c") or fd.get("criticality", "supporting"),
-                "entrypoint":      fd.get("ep") or fd.get("entrypoint", False),
-                "role_hint":       fd.get("rh") or fd.get("role_hint", ""),
-                "warnings":        (fd.get("warns") or fd.get("warnings", []))[:3],
-                "refactor_effort": fd.get("re") or fd.get("refactor_effort", 0.0),
-                "blast_radius":    fd.get("br") or fd.get("blast_radius", 0),
+                "file": normalized["file"],
+                "domain": normalized["domain"]["value"],
+                "priority": normalized["priority_score"],
+                "fan_in": normalized["fan_in"],
+                "criticality": normalized["criticality"],
+                "entrypoint": normalized["entrypoint"],
+                "role_hint": normalized["role_hint"],
+                "warnings": normalized["warnings"][:3],
+                "refactor_effort": normalized["refactor_effort"],
+                "blast_radius": normalized["blast_radius"],
+                "score_explanation": normalized["priority_breakdown"],
+                "classification": normalized["hints"].get("classification", {}),
             }
 
         edge_list: list[list[str]] = [
@@ -75,7 +78,8 @@ class HtmlExporter(BaseExporter):
         for src, dsts in graph.items():
             for dst in dsts:
                 if src in (rev.get(dst) or []):
-                    cyclic.add(src); cyclic.add(dst)
+                    cyclic.add(src)
+                    cyclic.add(dst)
 
         n_files  = max(len(files), 1)
         n_warns  = sum(len((fd.get("warns") or fd.get("warnings", []))) for fd in files.values())
@@ -88,16 +92,16 @@ class HtmlExporter(BaseExporter):
             for n, fs in sorted(modules.items(), key=lambda kv: len(kv[1]), reverse=True)[:15]
         ]
         warning_files = [
-            (fd.get("f") or fd.get("file", p), fd.get("warns") or fd.get("warnings", []))
+            (normalize_file_payload(fd, p)["file"], normalize_file_payload(fd, p)["warnings"])
             for p, fd in files.items()
-            if (fd.get("warns") or fd.get("warnings", []))
+            if normalize_file_payload(fd, p)["warnings"]
         ]
 
         stats = {
             "total_files":  len(files),
-            "critical":     sum(1 for fd in files.values() if (fd.get("c") or fd.get("criticality")) == "critical"),
-            "domains":      len({(fd.get("d") or {}).get("value") for fd in files.values()} - {None}),
-            "entrypoints":  sum(1 for fd in files.values() if fd.get("ep") or fd.get("entrypoint")),
+            "critical":     sum(1 for fd in files.values() if normalize_file_payload(fd)["criticality"] == "critical"),
+            "domains":      len({normalize_file_payload(fd)["domain"]["value"] for fd in files.values()} - {None}),
+            "entrypoints":  sum(1 for fd in files.values() if normalize_file_payload(fd)["entrypoint"]),
         }
 
         modules_nebula = {k: list(v)[:50] for k, v in list(modules.items())[:20]}
@@ -115,7 +119,24 @@ class HtmlExporter(BaseExporter):
             "top20":         top20,
             "mod_summary":   mod_summary,
             "warning_files": warning_files,
+            "diagnostics":   data.get("diagnostics") or {},
         }
+
+    @staticmethod
+    def _criticality_value(fd: dict[str, Any]) -> str:
+        raw = fd.get("criticality")
+        if isinstance(raw, str) and raw:
+            return raw
+        short = fd.get("c")
+        mapping = {
+            "c": "critical",
+            "i": "infra",
+            "f": "config",
+            "s": "supporting",
+        }
+        if isinstance(short, str) and short:
+            return mapping.get(short, short)
+        return "supporting"
 
     # ── Rendering ────────────────────────────────────────────────────────────
 
@@ -143,15 +164,16 @@ class HtmlExporter(BaseExporter):
             tmpl = env.get_template("index.html")
             # data_block, styles_css, and nebula_js are trusted internal content
             # injected verbatim into <script>/<style> tags — must not be HTML-escaped.
-            return tmpl.render(
+            rendered = tmpl.render(
                 data_block=_Markup(data_block),
                 styles_css=_Markup(styles_css),
                 nebula_js=_Markup(nebula_js),
                 **ctx,
             )
+            return str(rendered)
 
         # Fallback: inline everything
-        return self._render_inline(ctx, data_block, styles_css, nebula_js)
+        return str(self._render_inline(ctx, data_block, styles_css, nebula_js))
 
     def _render_inline(
         self,
@@ -200,7 +222,8 @@ class HtmlExporter(BaseExporter):
             re_v = f'{h.get("refactor_effort",0.0):.1f}'
             br_v = str(h.get("blast_radius",0))
             rows += (
-                f'<tr data-priority="{h["priority"]}" data-domain="{safe(h.get("domain",""))}">'
+                f'<tr data-priority="{h["priority"]}" data-domain="{safe(h.get("domain",""))}" '
+                f'data-criticality="{safe(crit)}">'
                 f'<td>{safe(h.get("file",""))}</td>'
                 f'<td><span class="badge {bc}">{safe(crit)}</span></td>'
                 f'<td>{h["priority"]}</td>'
@@ -209,8 +232,14 @@ class HtmlExporter(BaseExporter):
             )
         table_html = (
             '<div class="table-card">'
+            '<div class="toolbar">'
+            '<input id="hotspot-search" type="search" placeholder="Search file or domain">'
+            '<select id="criticality-filter"><option value="">All criticalities</option>'
+            '<option value="critical">critical</option><option value="infra">infra</option>'
+            '<option value="config">config</option><option value="supporting">supporting</option></select>'
+            '</div>'
             '<h2 style="font-size:.95rem;font-weight:600;color:#0f172a;margin-bottom:12px;">Top 20 Hotspots</h2>'
-            '<table><thead><tr>'
+            '<table id="hotspot-table"><thead><tr>'
             '<th>File</th><th>Criticality</th><th>Priority</th>'
             '<th>Domain</th><th>Refactor Effort</th><th>Blast Radius</th>'
             f'</tr></thead><tbody>{rows}</tbody></table></div>'
@@ -256,21 +285,6 @@ class HtmlExporter(BaseExporter):
             for d, c in _leg
         )
 
-        # CDN scripts for Three.js + extras + TWEEN
-        cdn = (
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/EffectComposer.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/RenderPass.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/UnrealBloomPass.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/postprocessing/ShaderPass.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/shaders/LuminosityHighPassShader.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/shaders/CopyShader.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/renderers/CSS2DRenderer.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@18.6.4/dist/tween.umd.js"></script>'
-            '<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>'
-        )
-
         switcher = """<script>
 function switchView(v){
   var nv=document.getElementById('nebula-view');
@@ -296,6 +310,36 @@ var nb=document.getElementById('btn-to-nebula');
 if(nb) nb.addEventListener('click',function(){switchView('nebula');});
 </script>"""
 
+        dashboard_controls = """<script>
+(function(){
+  var search=document.getElementById('hotspot-search');
+  var criticality=document.getElementById('criticality-filter');
+  var table=document.getElementById('hotspot-table');
+  if(!table) return;
+  function applyFilters(){
+    var needle=(search && search.value || '').toLowerCase();
+    var crit=(criticality && criticality.value || '').toLowerCase();
+    table.querySelectorAll('tbody tr').forEach(function(row){
+      var text=row.innerText.toLowerCase();
+      var rowCrit=(row.getAttribute('data-criticality') || '').toLowerCase();
+      var visible=(!needle || text.indexOf(needle) !== -1) && (!crit || rowCrit === crit);
+      row.style.display=visible ? '' : 'none';
+    });
+  }
+  if(search) search.addEventListener('input', applyFilters);
+  if(criticality) criticality.addEventListener('change', applyFilters);
+  table.querySelectorAll('tbody tr').forEach(function(row){
+    row.addEventListener('click', function(){
+      var file=row.querySelector('td');
+      if(file && window.focusNodeByFile){
+        window.focusNodeByFile(file.innerText);
+        switchView('nebula');
+      }
+    });
+  });
+})();
+</script>"""
+
         return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -303,7 +347,6 @@ if(nb) nb.addEventListener('click',function(){switchView('nebula');});
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="data:,">
 <title>Code Nebula v8 &middot; {safe(proj)}</title>
-{cdn}
 </head>
 <body>
 <script>{data_block}</script>
@@ -347,6 +390,7 @@ if(nb) nb.addEventListener('click',function(){switchView('nebula');});
     {table_html}
     {mods_html}
     {warns_html}
+    <div class="chart-card"><h2>Diagnostics</h2><pre class="diag-block">{safe(json.dumps(ctx.get("diagnostics", {}), ensure_ascii=False, indent=2))}</pre></div>
     <div id="back-bar">
       <button class="nb-btn" id="btn-to-nebula" style="background:#1a3460;border-color:#2d5a9e;">
         Back to Nebula
@@ -356,5 +400,6 @@ if(nb) nb.addEventListener('click',function(){switchView('nebula');});
 </div>
 <script>{nebula_js}</script>
 {switcher}
+{dashboard_controls}
 </body>
 </html>"""
